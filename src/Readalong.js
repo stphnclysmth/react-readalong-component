@@ -1,5 +1,40 @@
+/**
+
+ The MIT License (MIT)
+
+ Copyright (c) 2015 Talking Bibles International and Stephen Clay Smith
+
+ Permission is hereby granted, free of charge, to any person obtaining a copy
+ of this software and associated documentation files (the "Software"), to deal
+ in the Software without restriction, including without limitation the rights
+ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ copies of the Software, and to permit persons to whom the Software is
+ furnished to do so, subject to the following conditions:
+
+ The above copyright notice and this permission notice shall be included in all
+ copies or substantial portions of the Software.
+
+ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ SOFTWARE.
+
+ */
+
 var React = require('react');
+var PureRenderMixin = require('react/addons').addons.PureRenderMixin;
 var isValidElement = require('react/addons').isValidElement;
+
+/*************************
+ Statics
+ *************************/
+
+var mouseOverChild = {};
+var mouseOverChildTimeout = {};
+var speakingChild = {};
 
 
 /*************************
@@ -7,14 +42,12 @@ var isValidElement = require('react/addons').isValidElement;
  *************************/
 
 var characterRanges = {
-	//latinPunctuation: "–—′’'“″„\"(«.…¡¿′’'”″“\")».…!?",
-	//chinesePunctuation: "。，！？；：（）【】［］「『』」",
 	latinLetters: "\\u0041-\\u005A\\u0061-\\u007A\\u00C0-\\u017F\\u0100-\\u01FF\\u0180-\\u027F"
 };
 
 var regExp = {
 	abbreviations: new RegExp("[^" + characterRanges.latinLetters + "](e\\.g\\.)|(i\\.e\\.)|(mr\\.)|(mrs\\.)|(ms\\.)|(dr\\.)|(prof\\.)|(esq\\.)|(sr\\.)|(jr\\.)[^" + characterRanges.latinLetters + "]", "ig"),
-	innerWordPeriod: new RegExp("[" + characterRanges.latinLetters + "]\.[" + characterRanges.latinLetters + "]", "ig")
+	innerWordPeriod: new RegExp("[0-9" + characterRanges.latinLetters + "]\\.[0-9" + characterRanges.latinLetters + "]", "ig")
 };
 
 
@@ -103,19 +136,28 @@ function chunkString(str, length) {
  *************************/
     
 var Phrase = React.createClass({
+  propTypes: {
+    onMouseOver: React.PropTypes.func.isRequired,
+    onMouseOut: React.PropTypes.func.isRequired
+  },
+
+  mixins: [PureRenderMixin],
+
   getInitialState: function() {
     return {
-      activeClass: "" 
+      activeClass: ""
     }
   },
-  
+
   render: function () {
-    return <span className={'readalong-phrase ' + this.state.activeClass}
-                 onMouseOver={this.props.onMouseOver} 
-                 onMouseOut={this.props.onMouseOut} 
-                 ariaHidden="true">
-             {this.props.children}
-           </span>;
+    return (
+        <span className={'readalong-phrase ' + this.state.activeClass}
+              onMouseOver={this.props.onMouseOver}
+              onMouseOut={this.props.onMouseOut}
+              ariaHidden="true">
+          {this.props.children}
+        </span>
+    );
   }
 });
 	
@@ -123,81 +165,75 @@ var Readalong = React.createClass({
 	propTypes: {
 		lang: React.PropTypes.string.isRequired,
 		delimiter: React.PropTypes.oneOf(['word', 'sentence', 'element']).isRequired,
-		voice: React.PropTypes.string
+		voiceName: React.PropTypes.string
 	},
 
-	phraseIndex: 0,
-	  
-	mouseOverChild: {},
+  mixins: [PureRenderMixin],
 
-  mouseOverChildTimeout: {},
-  
-  speakingChild: {},
-		
-	getInitialState: function () {		
+	getInitialState: function() {
 		return {
-			voice: getVoiceForName(this.props.voice),
-			delimiter: this.props.delimiter,
+			voice: getVoiceForName(this.props.voiceName),
 			delimiterRegex: getDelimiterRegex(this.props.delimiter)
 		}
 	},
 	
 	componentWillReceiveProps: function (newProps) {
-		this.phraseIndex = 0;
-
 		this.setState({
-			voice: getVoiceForName(newProps.voice),
-			delimiter: newProps.delimiter,
+			voice: getVoiceForName(newProps.voiceName),
 			delimiterRegex: getDelimiterRegex(newProps.delimiter)
 		});
 	},
-	
-	onMouseOver: function(ref) {    
-    window.clearTimeout(this.mouseOverChildTimeout);
+
+  _phraseIndex: 0,
+
+  _onMouseOver: function(ref) {
+    window.clearTimeout(mouseOverChildTimeout[ref]);
+    delete mouseOverChildTimeout[ref];
 
     var child = this.refs[ref];
 
-    if (this.mouseOverChild === child) return;
-    this.mouseOverChild = child;
+    if (mouseOverChild === child) return;
+    mouseOverChild = child;
 
     window.speechSynthesis.cancel();
 
-    this.speechWillBegin(child);
+    this._speechWillBegin(child);
 
     var msg = new SpeechSynthesisUtterance();
 		msg.text = child.getDOMNode().textContent;
 		msg.lang = this.props.lang;
 		msg.voice = this.state.voice;
     
-    msg.onerror = function() { this.speechDidEnd(child); }.bind(this);
-		msg.onend = function() { this.speechDidEnd(child); }.bind(this);
+    msg.onerror = function() { this._speechDidEnd(child); }.bind(this);
+		msg.onend = function() { this._speechDidEnd(child); }.bind(this);
     
 		window.speechSynthesis.speak(msg);
 	},
 
-  onMouseOut: function() {
+  _onMouseOut: function(ref) {
     if (window.speechSynthesis.speaking) {
-      this.mouseOverChildTimeout = window.setTimeout(function() {
-        this.mouseOverChild = null;
-      }.bind(this), 500);
+      mouseOverChildTimeout[ref] = window.setTimeout(function() {
+        mouseOverChild = null;
+        delete mouseOverChildTimeout[ref];
+      }, 500);
     } else {
-      this.mouseOverChild = null;
+      mouseOverChild = null;
     }
   },
   
-  speechWillBegin: function(child) {
-    this.speakingChild = child;
-    
+  _speechWillBegin: function(child) {
+    speakingChild = child;
+
     child.setState({
       activeClass: "readalong-active"
     });
   },
   
-  speechDidEnd: function(child) {
+  _speechDidEnd: function(child) {
     if (window.speechSynthesis.speaking) {
-      if (this.speakingChild === child) return;
+      if (speakingChild === child) return;
     } else {
-      this.speakingChild = null;      
+      speakingChild = null;
     }
 
     child.setState({
@@ -205,66 +241,67 @@ var Readalong = React.createClass({
     });
   },
 
-	wrapChildren: function (children) {
-		return React.Children.map(children, this.wrapChild);
+	_wrapChildren: function (children) {
+		return React.Children.map(children, this._wrapChild);
 	},
 	
-	wrapChild: function (child) {
+	_wrapChild: function (child) {
 		if (isValidElement(child)) {			
-			if (child.props.silent ) {
+			if (child.props.silent) {
 				return child;
 			}
 			
-			return React.cloneElement(child, {}, this.wrapChildren(child.props.children));
+			return React.cloneElement(child, {}, this._wrapChildren(child.props.children));
 		}
 
 		var phrases = [];
-    		
-		if (this.state.delimiter === "sentence") {
+
+		if (this.props.delimiter === "sentence") {
 			child = encodePunctuation(child);
 		}
-						
+
 		var matches = child.split(this.state.delimiterRegex);
 		
 		for(var i = 0; i < matches.length; i++) {
 			var matchText = matches[i];
 
-			if (matchText === undefined) {
-				continue;
-			}
-
-			if (this.state.delimiter === "sentence") {
+			if (this.props.delimiter === "sentence") {
 				matchText = decodePunctuation(matchText);
 			}
 
 			if (matchText.trim() === "") {
 				phrases.push(" ");
-				this.phraseIndex++;
 			} else {
 				var matchPhrases = chunkString(matchText, 180);
 				
 				for (matchPhrase of matchPhrases) {
-          var ref = 'phrase' + this.phraseIndex;
+          var ref = 'phrase' + this._phraseIndex;
 					phrases.push(
-						<Phrase key={this.phraseIndex}
-                    ref={ref}
-							      onMouseOver={this.onMouseOver.bind(this, ref)} 
-							      onMouseOut={this.onMouseOut.bind(this, ref)}>
+						<Phrase ref={ref}
+                    onTouchMove={this._onMouseOver.bind(this, ref)}
+                    onTouchEnd={this._onMouseOut.bind(this, ref)}
+                    onTouchCancel={this._onMouseOut.bind(this, ref)}
+							      onMouseOver={this._onMouseOver.bind(this, ref)}
+							      onMouseOut={this._onMouseOut.bind(this, ref)}>
 							{matchPhrase}
 						</Phrase>
 					);
-					this.phraseIndex++;
+					this._phraseIndex++;
 				}	
 			}
 		}
 			
 		return phrases;
 	},
-	
+
 	render: function() {
-		var phrases = this.wrapChildren(this.props.children);
-		
-		return <div className="readalong">{phrases}</div>;
+    this._phraseIndex = 0;
+
+		return (
+        <div className="readalong">
+          {this._wrapChildren(this.props.children)}
+        </div>
+    );
 	}
 
 });

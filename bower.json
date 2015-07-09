@@ -1,12 +1,12 @@
 {
-  "name": "react-component-readalong",
-  "main": "dist/react-component-readalong.min.js",
+  "name": "react-readalong-component",
+  "main": "dist/react-readalong-component.min.js",
   "version": "0.0.1",
-  "homepage": "https://github.com/JedWatson/react-input-autosize",
+  "homepage": "https://github.com/TalkingBibles/react-readalong-component",
   "authors": [
-    "Jed Watson"
+    "Stephen Clay Smith"
   ],
-  "description": "My React Component",
+  "description": "A React component that uses the Speech Synthesis API to read text out loud by sentence or word while the user follows along with their mouse or finger",
   "moduleType": [
     "amd",
     "globals",
@@ -14,7 +14,11 @@
   ],
   "keywords": [
     "react",
-    "react-component"
+    "react-component",
+    "speech synthesis",
+    "tts",
+    "text-to-speech",
+    "web speech"
   ],
   "license": "MIT",
   "ignore": [
