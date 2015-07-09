@@ -1,9 +1,9 @@
 {
-  "name": "my-component",
+  "name": "react-component-readalong",
   "version": "0.0.1",
   "private": true,
   "description": "My React Component",
-  "main": "src/Component.js",
+  "main": "src/Readalong.js",
   "author": "Jed Watson",
   "license": "MIT",
   "homepage": "https://github.com/JedWatson/react-component-starter",
@@ -15,14 +15,16 @@
     "url": "https://github.com/JedWatson/react-component-starter/issues"
   },
   "dependencies": {
-    "react": "^0.12.2",
-    "reactify": "^0.17.1"
+    "react": "^0.13.3",
+    "reactify": "^1.1.1"
   },
   "devDependencies": {
+    "gulp": "^3.8.10",
+    "gulp-help": "^1.6.0",
     "react-component-gulp-tasks": "^0.1.1",
-    "gulp": "^3.8.10"
+    "highlight.js": "^8.6.0" 
   },
-  "browser": "src/AutosizeInput.js",
+  "browser": "src/Readalong.js",
   "browserify": {
     "transform": [
       "reactify"

@@ -1,6 +1,6 @@
 {
-  "name": "my-component",
-  "main": "dist/my-component.min.js",
+  "name": "react-component-readalong",
+  "main": "dist/react-component-readalong.min.js",
   "version": "0.0.1",
   "homepage": "https://github.com/JedWatson/react-input-autosize",
   "authors": [

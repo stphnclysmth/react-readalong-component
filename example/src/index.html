@@ -1,23 +1,111 @@
 <!doctype html>
 <head>
-	<title>React Starter Component</title>
-	<link rel="stylesheet" href="app.css">
+  <meta charset="utf-8">
+  <title>React Speakable Paragraph Component</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="app.css">
+  <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.6/highlight.min.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script>
 </head>
 <body>
-	<div class="container">
-		<h1>React Starter Component</h1>
-		<h2><a href="http://github.com/JedWatson/react-component-starter">View project on GitHub</a></h2>
-		<!-- the example app is rendered into this div -->
-		<div id="app"></div>
-		<!-- put any hints about your component example here -->
-		<div class="hint">
-			The example React app is rendered above.
-		</div>
-		<div class="footer">
-			Copyright &copy; Jed Watson 2014. MIT Licensed.
-		</div>
-	</div>
-	<script src="common.js"></script>
-	<script src="bundle.js"></script>
-	<script src="app.js"></script>
+<div class="jumbotron">
+  <div class="container">
+    <h1>React Readalong</h1>
+
+    <p>
+      A React component that reads text out loud by sentence or word while the user follows along with their mouse
+      or finger
+    </p>
+
+    <p>
+      <a class="btn btn-primary btn-lg" href="http://github.com/talkingbibles/react-readalong"
+         role="button">Github</a>
+    </p>
+  </div>
+</div>
+<div class="container">
+  <h2>Basic Example</h2>
+
+  <div id="simple"></div>
+
+  <h3><small>CODE</small></h3>
+  <pre><code class="html">
+  &lt;Readalong lang="en-US" delimiter="word"&gt;
+    There once was an old woman who lived in a shoe.
+    She was underwater on her mortgage. What would she do?
+  &lt;/Readalong&gt;
+  </code></pre>
+
+  <hr>
+
+  <h2>Example with Ignored Element</h2>
+
+  <div id="inner-element"></div>
+
+  <h3><small>CODE</small></h3>
+  <pre><code class="html">
+    &lt;Readalong lang="en-US" delimiter="word"&gt;
+      &lt;blockquote&gt;
+        &lt;p&gt;
+          This sentence has five words. Here are five more words. Five-
+          word sentences are fine. But several together become monotonous.
+          Listen to what is happening. The writing is getting boring. The
+          sound of it drones. It&rsquo;s like a stuck record. The ear
+          demands some variety. Now listen. I vary the sentence length,
+          and I create music. Music. The writing sings. It has a pleasant
+          rhythm, a lilt, a harmony. I use short sentences. And I use
+          sentences of medium length. And sometimes, when I am certain the
+          reader is rested, I will engage him with a sentence of
+          considerable length, a sentence that burns with energy and
+          builds with all the impetus of a crescendo, the roll of the
+          drums, the crash of the cymbals&ndash;sounds that say listen to
+          this, it is important.
+        &lt;/p&gt;
+    
+        &lt;footer ignore&gt;&lt;cite&gt;Gary Provost&lt;/cite&gt;&lt;/footer&gt;
+      &lt;/blockquote&gt;
+    &lt;/Readalong&gt;
+  </code></pre>
+
+  <hr>
+
+  <h2>Example with Multiple Elements</h2>
+
+  <p class="lead">Text can be styled.</p>
+
+  <div id="multiple-elements"></div>
+
+  <h3><small>CODE</small></h3>
+  <pre><code class="html">
+    &lt;Readalong lang="en-US" delimiter="word"&gt;
+      &lt;p&gt;
+        &lt;span data-verse=&quot;1&quot;&gt;In the beginning was the Word, and the
+        Word was with God, and the Word was God.&lt;/span&gt; &lt;span data-
+        &lt;verse=&quot;2&quot;&gt;The same was in the beginning with God.&lt;/span&gt;
+        &lt;span data-verse=&quot;3&quot;&gt;All things were made through him.
+        Without him, nothing was made that has been made.&lt;/span&gt;
+        &lt;span data-verse=&quot;4&quot;&gt;In him was life, and the life was the
+        light of men.&lt;/span&gt; &lt;span data-verse=&quot;5&quot;&gt;The light shines in
+        the darkness, and the darkness hasn&rsquo;t overcome it.&lt;/span&gt;
+      &lt;/p&gt; 
+          
+      &lt;p&gt;
+        &lt;span data-verse=&quot;6&quot;&gt;There came a man, sent from God, whose 
+        name was John.&lt;/span&gt; &lt;span data-verse=&quot;7&quot;&gt;The same came as 
+        a witness, that he might testify about the light, that all 
+        might believe through him.&lt;/span&gt; &lt;span data-verse=&quot;8&quot;&gt;He was 
+        not the light, but was sent that he might testify about the 
+        light.&lt;/span&gt; &lt;span data-verse=&quot;9&quot;&gt;The true light that 
+        enlightens everyone was coming into the world.&lt;/span&gt;
+      &lt;/p&gt;
+    &lt;/Readalong&gt;
+  </code></pre>
+
+  <p class="footer">
+    &copy; 2015 Clay Smith. MIT Licensed.
+  </p>
+</div>
+<script src="common.js"></script>
+<script src="bundle.js"></script>
+<script src="app.js"></script>
 </body>
