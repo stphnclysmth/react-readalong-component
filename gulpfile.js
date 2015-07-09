@@ -1,5 +1,6 @@
-var gulp = require('gulp-help')(require('gulp')),
-	initGulpTasks = require('react-component-gulp-tasks');
+var gulp = require('gulp-help')(require('gulp'));
+var initGulpTasks = require('react-component-gulp-tasks');
+var ghPages = require('gulp-gh-pages');
 
 
 /**
@@ -22,3 +23,8 @@ var config = require('./gulpconfig');
  */
 
 initGulpTasks(gulp, config);
+
+gulp.task('deploy', function() {
+  return gulp.src('./example/dist/**/*')
+      .pipe(ghPages());
+});

@@ -7,7 +7,7 @@ along with their mouse or finger
 
 ## Demo & Examples
 
-Live demo: [Github Pages](http://)
+Live demo: [Github Pages](http://talkingbibles.github.io/react-readalong-component/)
 
 To build the examples locally, run:
 
