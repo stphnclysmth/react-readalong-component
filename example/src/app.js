@@ -4,11 +4,15 @@ var DeliminatedParagraph = require('./DeliminatedParagraph');
 
 var Highlight = require('highlight.js');
 
-var simple = <Readalong lang="en-US" delimiter="word">
-	There once was an old woman who lived in a shoe. She was underwater on her mortgage. What would she do?
-</Readalong>;
+//var simple = <Readalong lang="en-US" delimiter="word">
+//	There once was an old woman who lived in a shoe. She was underwater on her mortgage. What would she do?
+//</Readalong>;
 
-React.render(simple, document.getElementById('simple'));
+React.render((
+		<Readalong lang="en-US" delimiter="word">
+			There once was an old woman who lived in a shoe. She was underwater on her mortgage. What would she do?
+		</Readalong>
+	), document.getElementById('simple'));
 
 var InnerElement = React.createClass({
 	render: function() {
@@ -57,5 +61,53 @@ var MultipleElements = React.createClass({
 });
 
 React.render(<MultipleElements />, document.getElementById('multiple-elements'));
+
+var ForeignLanguage = React.createClass({
+	render: function() {
+		return (
+			<DeliminatedParagraph>
+				<p><span data-verse="1">In the beginning was the Word, and the Word was 
+				with God, and the Word was God.</span> <span data-verse="2">The same was in 
+				the beginning with God.</span> <span data-verse="3">All things were made 
+				through him. Without him, nothing was made that has been made.</span> 
+				<span data-verse="4">In him was life, and the life was the light of 
+				men.</span> <span data-verse="5">The light shines in the darkness, and the 
+				darkness hasn’t overcome it.</span></p>
+
+				<p><span data-verse="6">There came a man, 
+				sent from God, whose name was John.</span> <span data-verse="7">The same came 
+				as a witness, that he might testify about the light, that all might 
+				believe through him.</span> <span data-verse="8">He was not the light, but was
+				sent that he might testify about the light.</span> <span data-verse="9">The 
+				true light that enlightens everyone was coming into the world.</span></p>
+			</DeliminatedParagraph>
+		)
+	}
+});
+
+React.render((
+	<Readalong lang="es" delimiter="sentence">
+		En un lugar de la Mancha, de cuyo nombre no quiero acordarme,
+		no ha mucho tiempo que vivía un hidalgo de los de lanza en
+		astillero, adarga antigua, rocín flaco y galgo corredor. Una
+		olla de algo más vaca que carnero, salpicón las más noches,
+		duelos y quebrantos los sábados, lentejas los viernes, algún
+		palomino de añadidura los domingos, consumían las tres partes
+		de su hacienda. El resto della concluían sayo de velarte,
+		calzas de velludo para las fiestas con sus pantuflos de lo
+		mismo, los días de entre semana se honraba con su vellori de
+		lo más fino. Tenía en su casa una ama que pasaba de los
+		cuarenta, y una sobrina que no llegaba a los veinte, y un mozo
+		de campo y plaza, que así ensillaba el rocín como tomaba la
+		podadera. Frisaba la edad de nuestro hidalgo con los cincuenta
+		años, era de complexión recia, seco de carnes, enjuto de
+		rostro; gran madrugador y amigo de la caza. Quieren decir que
+		tenía el sobrenombre de Quijada o Quesada (que en esto hay
+		alguna diferencia en los autores que deste caso escriben),
+		aunque por conjeturas verosímiles se deja entender que se
+		llama Quijana; pero esto importa poco a nuestro cuento; basta
+		que en la narración dél no se salga un punto de la verdad.
+	</Readalong>
+), document.getElementById('foreign-language'));
 
 Highlight.initHighlightingOnLoad();

@@ -1,6 +1,6 @@
 var React = require('react');
 var isValidElement = require('react/addons').isValidElement;
-var Phrase = require('./Phrase');
+var ReadablePhrase = require('./ReadablePhrase');
 
 /*************************
  Constants
@@ -87,22 +87,21 @@ function getDelimiterRegex(delimiter) {
  Speech Synthesis
  *************************/
 
-function getVoiceForLanguage(language) {
-	return window.speechSynthesis.getVoices().filter(function (voice) {
-		return voice.lang === language;
-	})[0];
+function getVoiceForName(name) {
+	var voices = window.speechSynthesis.getVoices();
+	return voices.filter(function (voice) {
+		return voice.name === name;
+	})[0] || voices[0];
 }
 
-function getVoiceForName(name) {
-	return window.speechSynthesis.getVoices().filter(function (voice) {
-		return voice.name === name;
-	})[0];
+function chunkString(str, length) {
+	return str.match(new RegExp('[\\s\\S]{1,' + length + '}', 'g'));
 }
 
 /*************************
  Component
  *************************/
-var SpeakableParagraph = React.createClass({
+var Readalong = React.createClass({
 	propTypes: {
 		lang: React.PropTypes.string.isRequired,
 		delimiter: React.PropTypes.oneOf(['word', 'sentence', 'element']).isRequired,
@@ -113,17 +112,19 @@ var SpeakableParagraph = React.createClass({
 	
 	currentTarget: {},
 		
-	getInitialState: function () {	
+	getInitialState: function () {		
 		return {
-			voice: getVoiceForName(this.props.voice) || getVoiceForLanguage(this.props.lang),
+			voice: getVoiceForName(this.props.voice),
 			delimiter: this.props.delimiter,
 			delimiterRegex: getDelimiterRegex(this.props.delimiter)
 		}
 	},
 	
-	componentWillReceiveProps: function (newProps) {		
+	componentWillReceiveProps: function (newProps) {
+		this.phraseIndex = 0;
+
 		this.setState({
-			voice: getVoiceForName(newProps.voice) || getVoiceForLanguage(this.props.lang),
+			voice: getVoiceForName(newProps.voice),
 			delimiter: newProps.delimiter,
 			delimiterRegex: getDelimiterRegex(newProps.delimiter)
 		});
@@ -163,7 +164,7 @@ var SpeakableParagraph = React.createClass({
 
 		var phrases = [];
     		
-		if (this.props.delimiter === "sentence") {
+		if (this.state.delimiter === "sentence") {
 			child = encodePunctuation(child);
 		}
 						
@@ -176,35 +177,35 @@ var SpeakableParagraph = React.createClass({
 				continue;
 			}
 
-			if (this.props.delimiter === "sentence") {
+			if (this.state.delimiter === "sentence") {
 				matchText = decodePunctuation(matchText);
 			}
 
 			if (matchText === "") {
-				this.phraseIndex++;
 				phrases.push(" ");
+				this.phraseIndex++;
 			} else {
-				phrases.push(<Phrase key={this.phraseIndex} speak={this.beginSpeaking} release={this.releaseSpeaker}>{matchText}</Phrase>);
+				var matchPhrases = chunkString(matchText, 200);
+				
+				for (matchPhrase of matchPhrases) {
+					phrases.push(<ReadablePhrase key={this.phraseIndex} speak={this.beginSpeaking} release={this.releaseSpeaker}>{matchPhrase}</ReadablePhrase>);
+					this.phraseIndex++;
+				}	
 			}
 
 
-			this.phraseIndex++;
 		}
 			
 		return phrases;
 	},
 	
 	render: function () {
-		var speakablePhrases = this.wrapChildren(this.props.children);
+		var phrases = this.wrapChildren(this.props.children);
 		
-		return <div>
-			<div className="speakable-paragraph">
-				{speakablePhrases}
-			</div>
-		</div>;
+		return <div className="readalong">{phrases}</div>;
 	}
 
 });
 
-module.exports = SpeakableParagraph;
+module.exports = Readalong;
 

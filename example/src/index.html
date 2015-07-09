@@ -1,7 +1,8 @@
 <!doctype html>
+<html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>React Speakable Paragraph Component</title>
+  <title>Readalong React Component</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="app.css">
   <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.6/highlight.min.js"></script>
@@ -10,7 +11,7 @@
 <body>
 <div class="jumbotron">
   <div class="container">
-    <h1>React Readalong</h1>
+    <h1>Readalong</h1>
 
     <p>
       A React component that reads text out loud by sentence or word while the user follows along with their mouse
@@ -100,6 +101,42 @@
       &lt;/p&gt;
     &lt;/Readalong&gt;
   </code></pre>
+	
+	<hr>
+	
+	<h2>Example with Foreign Language</h2>
+	
+	<p class="lead">Readalong supports any language the browser also supports.</p>
+	
+	<div id="foreign-language"></div>
+	
+	<h3><small>CODE</small></h3>
+  <pre><code class="html">
+    &lt;Readalong lang="es" delimiter="sentence"&gt;
+      &lt;p&gt;
+        En un lugar de la Mancha, de cuyo nombre no quiero acordarme,
+        no ha mucho tiempo que vivía un hidalgo de los de lanza en
+        astillero, adarga antigua, rocín flaco y galgo corredor. Una
+        olla de algo más vaca que carnero, salpicón las más noches,
+        duelos y quebrantos los sábados, lentejas los viernes, algún
+        palomino de añadidura los domingos, consumían las tres partes
+        de su hacienda. El resto della concluían sayo de velarte,
+        calzas de velludo para las fiestas con sus pantuflos de lo
+        mismo, los días de entre semana se honraba con su vellori de
+        lo más fino. Tenía en su casa una ama que pasaba de los
+        cuarenta, y una sobrina que no llegaba a los veinte, y un mozo
+        de campo y plaza, que así ensillaba el rocín como tomaba la
+        podadera. Frisaba la edad de nuestro hidalgo con los cincuenta
+        años, era de complexión recia, seco de carnes, enjuto de
+        rostro; gran madrugador y amigo de la caza. Quieren decir que
+        tenía el sobrenombre de Quijada o Quesada (que en esto hay
+        alguna diferencia en los autores que deste caso escriben),
+        aunque por conjeturas verosímiles se deja entender que se
+        llama Quijana; pero esto importa poco a nuestro cuento; basta
+        que en la narración dél no se salga un punto de la verdad.
+      &lt;/p&gt;
+    &lt;/Readalong&gt;
+	</code></pre>
 
   <p class="footer">
     &copy; 2015 Clay Smith. MIT Licensed.
@@ -109,3 +146,4 @@
 <script src="bundle.js"></script>
 <script src="app.js"></script>
 </body>
+</html>
