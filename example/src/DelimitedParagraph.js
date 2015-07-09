@@ -1,10 +1,14 @@
 var React = require('react');
-var Readlong = require('react-component-readalong');
+var Readalong = require('react-component-readalong');
 
 var DeliminatedParagraph = React.createClass({
+	propTypes: {
+		word: React.PropTypes.oneOf(["word", "sentence"])	
+	},
+	
 	getInitialState: function () {
 		return {
-			delimiter: "word",
+			delimiter: this.props.delimiter || "word",
 			voices: [],
 			voice: null
 		}
@@ -60,13 +64,18 @@ var DeliminatedParagraph = React.createClass({
 										{voiceOptions}
 									</select>
 								</div>
+								
+								<div className="col-lg-4">
+									
+									<span className="help-block">The list of voices is populated by the voices available to your browser's SpeechSynthesis API.</span>
+								</div>
 							</div>
 						</form>
 					</div>
 
-					<Readlong lang="en-US" voice={this.state.voice} delimiter={this.state.delimiter}>
+					<Readalong lang="en-US" voice={this.state.voice} delimiter={this.state.delimiter}>
 						{this.props.children}
-					</Readlong>
+					</Readalong>
 				</div>
 		);
 	}

@@ -1,23 +1,22 @@
 var React = require('react');
 var isValidElement = require('react/addons').isValidElement;
-var ReadablePhrase = require('./ReadablePhrase');
+
 
 /*************************
  Constants
  *************************/
 
 var characterRanges = {
-	latinPunctuation: "–—′’'“″„\"(«.…¡¿′’'”″“\")».…!?",
+	//latinPunctuation: "–—′’'“″„\"(«.…¡¿′’'”″“\")».…!?",
+	//chinesePunctuation: "。，！？；：（）【】［］「『』」",
 	latinLetters: "\\u0041-\\u005A\\u0061-\\u007A\\u00C0-\\u017F\\u0100-\\u01FF\\u0180-\\u027F"
 };
 
 var regExp = {
 	abbreviations: new RegExp("[^" + characterRanges.latinLetters + "](e\\.g\\.)|(i\\.e\\.)|(mr\\.)|(mrs\\.)|(ms\\.)|(dr\\.)|(prof\\.)|(esq\\.)|(sr\\.)|(jr\\.)[^" + characterRanges.latinLetters + "]", "ig"),
-	innerWordPeriod: new RegExp("[" + characterRanges.latinLetters + "]\.[" + characterRanges.latinLetters + "]", "ig"),
-	onlyContainsPunctuation: new RegExp("[^" + characterRanges.latinPunctuation + "]"),
-	adjoinedPunctuation: new RegExp("^[" + characterRanges.latinPunctuation + "]+|[" + characterRanges.latinPunctuation + "]+$", "g"),
-	skippedElements: /(script|style|select|textarea)/i
+	innerWordPeriod: new RegExp("[" + characterRanges.latinLetters + "]\.[" + characterRanges.latinLetters + "]", "ig")
 };
+
 
 /*************************
  Punctuation Escaping
@@ -64,7 +63,7 @@ function getDelimiterRegex(delimiter) {
 		case "sentence":
 			/* Matches phrases either ending in Latin alphabet punctuation or located at the end of the text. (Linebreaks are not considered punctuation.) */
 			/* Note: If you don't want punctuation to demarcate a sentence match, replace the punctuation character with {{ASCII_CODE_FOR_DESIRED_PUNCTUATION}}. ASCII codes: .={{46}}, ?={{63}}, !={{33}} */
-			return /(?=\S)((?=[.]{2,})?[^!?]+?[.…!?]+|(?=\s+$)|$(?=\s*[′’'”″“")»]+)*)/;
+			return /(?=\S)((?=[.。]{2,})?[^!?]+?[.…!?。！？]+|(?=\s+$)|$(?=\s*[′’'”″“"「『』」)»]+)*)/;
 			/* RegExp explanation (Tip: Use Regex101.com to play around with this expression and see which strings it matches): 
 			 - Expanded view: /(?=\S) ( ([.]{2,})? [^!?]+? ([.…!?]+|(?=\s+$)|$) (\s*[′’'”″“")»]+)* )
 			 - (?=\S) --> Match must contain a non-space character.
@@ -95,12 +94,31 @@ function getVoiceForName(name) {
 }
 
 function chunkString(str, length) {
-	return str.match(new RegExp('[\\s\\S]{1,' + length + '}', 'g'));
+	return str.match(new RegExp('[\\s\\S]{1,' + length + '}(?:\\s|$)', 'g'));
 }
 
+
 /*************************
- Component
+ Components
  *************************/
+    
+var Phrase = React.createClass({
+  getInitialState: function() {
+    return {
+      activeClass: "" 
+    }
+  },
+  
+  render: function () {
+    return <span className={'readalong-phrase ' + this.state.activeClass}
+                 onMouseOver={this.props.onMouseOver} 
+                 onMouseOut={this.props.onMouseOut} 
+                 ariaHidden="true">
+             {this.props.children}
+           </span>;
+  }
+});
+	
 var Readalong = React.createClass({
 	propTypes: {
 		lang: React.PropTypes.string.isRequired,
@@ -109,8 +127,12 @@ var Readalong = React.createClass({
 	},
 
 	phraseIndex: 0,
-	
-	currentTarget: {},
+	  
+	mouseOverChild: {},
+
+  mouseOverChildTimeout: {},
+  
+  speakingChild: {},
 		
 	getInitialState: function () {		
 		return {
@@ -130,24 +152,58 @@ var Readalong = React.createClass({
 		});
 	},
 	
-	beginSpeaking: function(event) {
-		if (this.currentTarget === event.target) return;
+	onMouseOver: function(ref) {    
+    window.clearTimeout(this.mouseOverChildTimeout);
 
-		this.currentTarget = event.target;
+    var child = this.refs[ref];
 
-		window.speechSynthesis.cancel();
+    if (this.mouseOverChild === child) return;
+    this.mouseOverChild = child;
 
-		var msg = new SpeechSynthesisUtterance();
-		msg.text = event.target.textContent;
+    window.speechSynthesis.cancel();
+
+    this.speechWillBegin(child);
+
+    var msg = new SpeechSynthesisUtterance();
+		msg.text = child.getDOMNode().textContent;
 		msg.lang = this.props.lang;
 		msg.voice = this.state.voice;
-		
+    
+    msg.onerror = function() { this.speechDidEnd(child); }.bind(this);
+		msg.onend = function() { this.speechDidEnd(child); }.bind(this);
+    
 		window.speechSynthesis.speak(msg);
 	},
-	
-	releaseSpeaker: function () {
-		this.currentTarget = null;
-	},
+
+  onMouseOut: function() {
+    if (window.speechSynthesis.speaking) {
+      this.mouseOverChildTimeout = window.setTimeout(function() {
+        this.mouseOverChild = null;
+      }.bind(this), 500);
+    } else {
+      this.mouseOverChild = null;
+    }
+  },
+  
+  speechWillBegin: function(child) {
+    this.speakingChild = child;
+    
+    child.setState({
+      activeClass: "readalong-active"
+    });
+  },
+  
+  speechDidEnd: function(child) {
+    if (window.speechSynthesis.speaking) {
+      if (this.speakingChild === child) return;
+    } else {
+      this.speakingChild = null;      
+    }
+
+    child.setState({
+      activeClass: ""
+    });
+  },
 
 	wrapChildren: function (children) {
 		return React.Children.map(children, this.wrapChild);
@@ -155,7 +211,7 @@ var Readalong = React.createClass({
 	
 	wrapChild: function (child) {
 		if (isValidElement(child)) {			
-			if (child.props.ignore) {
+			if (child.props.silent ) {
 				return child;
 			}
 			
@@ -181,25 +237,31 @@ var Readalong = React.createClass({
 				matchText = decodePunctuation(matchText);
 			}
 
-			if (matchText === "") {
+			if (matchText.trim() === "") {
 				phrases.push(" ");
 				this.phraseIndex++;
 			} else {
-				var matchPhrases = chunkString(matchText, 200);
+				var matchPhrases = chunkString(matchText, 180);
 				
 				for (matchPhrase of matchPhrases) {
-					phrases.push(<ReadablePhrase key={this.phraseIndex} speak={this.beginSpeaking} release={this.releaseSpeaker}>{matchPhrase}</ReadablePhrase>);
+          var ref = 'phrase' + this.phraseIndex;
+					phrases.push(
+						<Phrase key={this.phraseIndex}
+                    ref={ref}
+							      onMouseOver={this.onMouseOver.bind(this, ref)} 
+							      onMouseOut={this.onMouseOut.bind(this, ref)}>
+							{matchPhrase}
+						</Phrase>
+					);
 					this.phraseIndex++;
 				}	
 			}
-
-
 		}
 			
 		return phrases;
 	},
 	
-	render: function () {
+	render: function() {
 		var phrases = this.wrapChildren(this.props.children);
 		
 		return <div className="readalong">{phrases}</div>;

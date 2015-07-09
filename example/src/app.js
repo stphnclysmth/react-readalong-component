@@ -1,6 +1,6 @@
 var React = require('react');
 var Readalong = require('react-component-readalong');
-var DeliminatedParagraph = require('./DeliminatedParagraph');
+var DelimitedParagraph = require('./DelimitedParagraph');
 
 var Highlight = require('highlight.js');
 
@@ -17,7 +17,7 @@ React.render((
 var InnerElement = React.createClass({
 	render: function() {
 		return (
-				<DeliminatedParagraph>
+				<DelimitedParagraph delimiter="sentence">
 					<blockquote>
 						<p>This sentence has five words. Here are five more words. Five-word sentences are fine. But several together 
 						become monotonous. Listen to what is happening. The writing is getting boring. The sound of it drones. It’s 
@@ -28,9 +28,9 @@ var InnerElement = React.createClass({
 						a crescendo, the roll of the drums, the crash of the cymbals–sounds that say listen to this, it is 
 						important.</p>
 						
-						<footer ignore><cite>Gary Provost</cite></footer>
+						<footer silent><cite>Gary Provost</cite></footer>
 					</blockquote>
-				</DeliminatedParagraph>
+				</DelimitedParagraph>
 		)
 	}
 });
@@ -40,7 +40,7 @@ React.render(<InnerElement />, document.getElementById('inner-element'));
 var MultipleElements = React.createClass({
 	render: function() {
 		return (
-			<DeliminatedParagraph>
+			<DelimitedParagraph>
 				<p><span data-verse="1">In the beginning was the Word, and the Word was 
 				with God, and the Word was God.</span> <span data-verse="2">The same was in 
 				the beginning with God.</span> <span data-verse="3">All things were made 
@@ -55,35 +55,14 @@ var MultipleElements = React.createClass({
 				believe through him.</span> <span data-verse="8">He was not the light, but was
 				sent that he might testify about the light.</span> <span data-verse="9">The 
 				true light that enlightens everyone was coming into the world.</span></p>
-			</DeliminatedParagraph>
+
+        <footer>— <cite>John 1:1-9</cite></footer>
+			</DelimitedParagraph>
 			)
 	}
 });
 
 React.render(<MultipleElements />, document.getElementById('multiple-elements'));
-
-var ForeignLanguage = React.createClass({
-	render: function() {
-		return (
-			<DeliminatedParagraph>
-				<p><span data-verse="1">In the beginning was the Word, and the Word was 
-				with God, and the Word was God.</span> <span data-verse="2">The same was in 
-				the beginning with God.</span> <span data-verse="3">All things were made 
-				through him. Without him, nothing was made that has been made.</span> 
-				<span data-verse="4">In him was life, and the life was the light of 
-				men.</span> <span data-verse="5">The light shines in the darkness, and the 
-				darkness hasn’t overcome it.</span></p>
-
-				<p><span data-verse="6">There came a man, 
-				sent from God, whose name was John.</span> <span data-verse="7">The same came 
-				as a witness, that he might testify about the light, that all might 
-				believe through him.</span> <span data-verse="8">He was not the light, but was
-				sent that he might testify about the light.</span> <span data-verse="9">The 
-				true light that enlightens everyone was coming into the world.</span></p>
-			</DeliminatedParagraph>
-		)
-	}
-});
 
 React.render((
 	<Readalong lang="es" delimiter="sentence">
@@ -108,6 +87,23 @@ React.render((
 		llama Quijana; pero esto importa poco a nuestro cuento; basta
 		que en la narración dél no se salga un punto de la verdad.
 	</Readalong>
-), document.getElementById('foreign-language'));
+), document.getElementById('spanish-language'));
+
+React.render((
+	<Readalong lang="zh" delimiter="sentence">
+		<p>
+			<i silent>1</i>太 初 有 道 ， 道 与 神 同 在 ， 道 就 是 神 。
+			<i silent>2</i>这 道 太 初 与 神 同 在 。 <i silent>3</i>万 物 是 
+			藉 着 他 造 的 ； 凡 被 造 的 ， 没 有 一 样 不 是 藉 着 他 造 的 。 
+			<i silent>4</i>生 命 在 他 里 头 ， 这 生 命 就 是 人 的 光 。 
+			<i silent>5</i>光 照 在 黑 暗 里 ， 黑 暗 却 不 接 受 光 。 
+			<i silent>6</i>有 一 个 人 ， 是 从 神 那 里 差 来 的 ， 名 叫 约 翰 。 
+			<i silent>7</i>这 人 来 ， 为 要 作 见 证 ， 就 是 为 光 作 见 证 ， 
+			叫 众 人 因 他 可 以 信 。 <i silent>8</i>他 不 是 那 光 ， 乃 是 要 
+			为 光 作 见 证 。 <i silent>9</i>那 光 是 真 光 ， 照 亮 一 切 生 
+      在 世 上 的 人 。
+		</p>
+	</Readalong>
+), document.getElementById('chinese-language'));
 
 Highlight.initHighlightingOnLoad();

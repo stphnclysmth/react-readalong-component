@@ -21,6 +21,8 @@
     <p>
       <a class="btn btn-primary btn-lg" href="http://github.com/talkingbibles/react-readalong"
          role="button">Github</a>
+      <a class="btn btn-default btn-lg" href="http://www.talkingbibles.org/"
+         role="button">Talking Bibles</a>
     </p>
   </div>
 </div>
@@ -39,8 +41,16 @@
 
   <hr>
 
-  <h2>Example with Ignored Element</h2>
-
+  <h2>Example with Silent Element</h2>
+  
+  <p class="lead">Readalong will ignore any text wrapped in an element with the <code>silent</code> attribute.</p>
+  
+  <p class="text-muted">
+    This delimiter and voice selection form is not included in the Readalong component, but feel free
+    to consult the <code>DelimitedParagraph</code> component in the examples directory for ideas about
+    implementing something similar in your app.
+  </p>
+  
   <div id="inner-element"></div>
 
   <h3><small>CODE</small></h3>
@@ -63,7 +73,7 @@
           this, it is important.
         &lt;/p&gt;
     
-        &lt;footer ignore&gt;&lt;cite&gt;Gary Provost&lt;/cite&gt;&lt;/footer&gt;
+        &lt;footer silent&gt;&lt;cite&gt;Gary Provost&lt;/cite&gt;&lt;/footer&gt;
       &lt;/blockquote&gt;
     &lt;/Readalong&gt;
   </code></pre>
@@ -72,7 +82,7 @@
 
   <h2>Example with Multiple Elements</h2>
 
-  <p class="lead">Text can be styled.</p>
+  <p class="lead">Readalong can process multiple blocks of text in the same component.</p>
 
   <div id="multiple-elements"></div>
 
@@ -101,16 +111,17 @@
       &lt;/p&gt;
     &lt;/Readalong&gt;
   </code></pre>
-	
-	<hr>
-	
-	<h2>Example with Foreign Language</h2>
-	
-	<p class="lead">Readalong supports any language the browser also supports.</p>
-	
-	<div id="foreign-language"></div>
-	
-	<h3><small>CODE</small></h3>
+  
+  <hr>
+  
+  <h2>Example with Foreign Language</h2>
+  
+  <p class="lead">Readalong supports any language that the browser also supports.</p>
+  
+  <h3>Spanish</h3>
+  <div id="spanish-language"></div>
+  
+  <h3><small>CODE</small></h3>
   <pre><code class="html">
     &lt;Readalong lang="es" delimiter="sentence"&gt;
       &lt;p&gt;
@@ -136,7 +147,29 @@
         que en la narración dél no se salga un punto de la verdad.
       &lt;/p&gt;
     &lt;/Readalong&gt;
-	</code></pre>
+  </code></pre>
+  
+  <h3>Chinese</h3>
+  <div id="chinese-language"></div>
+  
+  <h3><small>CODE</small></h3>
+  <pre><code class="html">
+    &lt;Readalong lang="es" delimiter="sentence"&gt;
+      &lt;p&gt;
+        &lt;i silent&gt;1&lt;/i&gt;太 初 有 道 ， 道 与 神 同 在 ， 道 就 是 神 。
+        &lt;i silent&gt;2&lt;/i&gt;这 道 太 初 与 神 同 在 。 &lt;i silent&gt;3&lt;/i&gt;万 物 是
+        藉 着 他 造 的 ； 凡 被 造 的 ， 没 有 一 样 不 是 藉 着 他 造 的 。
+        &lt;i silent&gt;4&lt;/i&gt;生 命 在 他 里 头 ， 这 生 命 就 是 人 的 光 。
+        &lt;i silent&gt;5&lt;/i&gt;光 照 在 黑 暗 里 ， 黑 暗 却 不 接 受 光 。
+        &lt;i silent&gt;6&lt;/i&gt;有 一 个 人 ， 是 从 神 那 里 差 来 的 ， 名 叫 约 翰 。
+        &lt;i silent&gt;7&lt;/i&gt;这 人 来 ， 为 要 作 见 证 ， 就 是 为 光 作 见 证 ，
+        叫 众 人 因 他 可 以 信 。 &lt;i silent&gt;8&lt;/i&gt;他 不 是 那 光 ， 乃 是 要
+        为 光 作 见 证 。 &lt;i silent&gt;9&lt;/i&gt;那 光 是 真 光 ， 照 亮 一 切 生
+        在 世 上 的 人 。
+      &lt;/p&gt;
+    &lt;/Readalong&gt;
+  </code></pre>
+  
 
   <p class="footer">
     &copy; 2015 Clay Smith. MIT Licensed.
