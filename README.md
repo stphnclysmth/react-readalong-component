@@ -38,12 +38,12 @@ of `lang` and `delimiter` can be provided as attributes, while `voiceName` shoul
 the available Speech Synthesis voices. The browser will use its default voice until a valid, different voice is passed.
 
 <dl>
-  <dt>lang</dt><dd>*Any standard HTML language encoding code.* Used by the browser to select a default voice.</dd>
-  <dt>delimiter</dt><dd>*Either "word" or "sentence."* The size of the spoken chunks.</dd>
-  <dt>voiceName</dt><dd>*Name of any voice supported by the browser.* Overrides the default selected for language.</dd>
+<dt>lang</dt><dd><i>Any standard HTML language encoding code.</i> Used by the browser to select a default voice.</dd>
+<dt>delimiter</dt><dd><i>Either "word" or "sentence."</i> The size of the spoken chunks.</dd>
+<dt>voiceName</dt><dd><i>Name of any voice supported by the browser.</i> Overrides the default selected for language.</dd>
 </dl>
 
-```
+```javascript
 var Readalong = require('react-readalong-component');
 
 <Readalong lang="en" delimiter="sentence">
