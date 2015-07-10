@@ -24,90 +24,102 @@
 
  */
 
+'use strict';
+
 var React = require('react');
 var PureRenderMixin = require('react/addons').addons.PureRenderMixin;
+var LinkedStateMixin = require('react/addons').addons.LinkedStateMixin;
 var Readalong = require('react-readalong-component');
 
 var DeliminatedParagraph = React.createClass({
-	propTypes: {
-		word: React.PropTypes.oneOf(["word", "sentence"])	
-	},
+  displayName: 'DeliminatedParagraph',
 
-  mixins: [PureRenderMixin],
+  propTypes: {
+    children: React.PropTypes.node.isRequired,
+    delimiter: React.PropTypes.oneOf(['word', 'sentence']).isRequired,
+    lang: React.PropTypes.string.isRequired
+  },
 
-	getInitialState: function () {
-		return {
-			delimiter: this.props.delimiter || "word",
-			voices: [],
-			voice: null
-		}
-	},
+  mixins: [LinkedStateMixin, PureRenderMixin],
 
-	updateDelimiter: function (event) {
-		this.setState({
-			delimiter: event.target.value
-		});
-	},
+  getInitialState: function () {
+    return {
+      delimiter: this.props.delimiter,
+      voices: [],
+      voiceName: null
+    };
+  },
 
-	updateVoice: function (event) {
-		this.setState({
-			voice: event.target.value
-		});
-	},
+  componentWillMount: function () {
+    this._getVoices(0);
+  },
 
-	updateVoices: function() {
-		this.setState({
-			voices: window.speechSynthesis.getVoices()
-		});
-	},
+  _getVoices: function(attempt) {
+    var voices = window.speechSynthesis.getVoices();
 
-	componentWillMount: function () {
-		window.speechSynthesis.addEventListener('voiceschanged', this.updateVoices, false);
-	},
+    if (voices && voices.length > 0) {
+      voices.unshift('');
 
-	componentWillUnmount: function () {
-    window.speechSynthesis.removeEventListener('voiceschanged', this.updateVoices, false);
-	},
+      this.setState({
+        voices: voices
+      });
 
-	render: function () {
-    var voiceOptions = this.state.voices.map(function (voice) {
-			return <option key={voice.name} value={voice.name}>{voice.name}</option>;
-		});
+      return;
+    }
 
-		return (
-				<div>
-					<div className="well well-sm">
-						<form className="form">
-							<div className="row">
-								<div className="form-group col-lg-4">
-									<label className="control-label">Delimiter</label>
-									<select className="form-control" value={this.state.delimiter} onChange={this.updateDelimiter}>
-										<option value="sentence">Sentence</option>
-										<option value="word">Word</option>
-									</select>
-								</div>
-		
-								<div className="form-group col-lg-4">
-									<label className="control-label">Voice</label>
-									<select className="form-control" value={this.state.voice} onChange={this.updateVoice}>
-										{voiceOptions}
-									</select>
-								</div>
-								
-								<div className="col-lg-4">
-									
-									<span className="help-block">The list of voices is populated by the voices available to your browser's SpeechSynthesis API.</span>
-								</div>
-							</div>
-						</form>
-					</div>
+    if (attempt <= 30) {
+      setTimeout(this._getVoices.bind(this, ++attempt), 500);
 
-					<Readalong lang="en-US" voiceName={this.state.voice} delimiter={this.state.delimiter}>
-						{this.props.children}
-					</Readalong>
-				</div>
-		);
-	}
+      return;
+    }
+
+    console.error(this.displayName + ': Could not load Speech Synthesis voices before timeout.');
+  },
+
+  render: function () {
+    var voiceOptions = this.state.voices.map(function (voice, index) {
+      if (typeof voice === 'object') {
+        return <option key={voice.name} value={voice.name}>{voice.name}</option>;
+      }
+
+      return <option key={index}></option>
+    });
+
+    var disabled = (voiceOptions.length > 0) ? '' : 'disabled';
+
+    return (
+        <div>
+          <div className='well well-sm'>
+            <form className='form'>
+              <div className='row'>
+                <div className='form-group col-lg-4'>
+                  <label className='control-label'>Delimiter</label>
+                  <select className='form-control' valueLink={this.linkState('delimiter')}>
+                    <option value='sentence'>Sentence</option>
+                    <option value='word'>Word</option>
+                  </select>
+                </div>
+
+                <div className='form-group col-lg-4'>
+                  <label className='control-label'>Voice</label>
+                  <select className='form-control' disabled={disabled} valueLink={this.linkState('voiceName')}>
+                    {voiceOptions}
+                  </select>
+                </div>
+
+                <div className='col-lg-4'>
+                  <span className='help-block'>The list of voices is populated by the voices available to your browser's SpeechSynthesis API.</span>
+                </div>
+              </div>
+            </form>
+          </div>
+
+          <Readalong delimiter={this.state.delimiter} lang={this.props.lang} voiceName={this.state.voiceName}>
+            {this.props.children}
+          </Readalong>
+        </div>
+    );
+  }
 });
 
 module.exports = DeliminatedParagraph;

@@ -36,11 +36,12 @@ npm install react-component-readalong --save
 The component provides a single element, `Readalong`, that takes three properties and some text content. The properties
 of `lang` and `delimiter` can be provided as attributes, while `voiceName` should be passed after the browser registers
 the available Speech Synthesis voices. The browser will use its default voice until a valid, different voice is passed.
+The component will attempt to choose a default voice based on the passed `lang` property, but this is hit-or-miss.
 
 <dl>
-<dt>lang</dt><dd><i>Any standard HTML language encoding code.</i> Used by the browser to select a default voice.</dd>
-<dt>delimiter</dt><dd><i>Either "word" or "sentence."</i> The size of the spoken chunks.</dd>
-<dt>voiceName</dt><dd><i>Name of any voice supported by the browser.</i> Overrides the default selected for language.</dd>
+<dt>lang</dt><dd><em>Any standard HTML language encoding code.</i> Used by the browser to select a default voice.</dd>
+<dt>delimiter</dt><dd><em>Either "word" or "sentence."</i> The size of the spoken chunks.</dd>
+<dt>voiceName</dt><dd><em>Name of any voice supported by the browser.</i> Overrides the default selected for language.</dd>
 </dl>
 
 ```javascript
@@ -55,11 +56,22 @@ var Readalong = require('react-readalong-component');
 </Readalong>
 ```
 
+The output of the component receives three classes for use with styling. The outer wrapper has the class,
+`readalong`. Every readable phrase is wrapped in a span with the `readalong-phrase` class.
+While a phrase is being spoken, the corresponding span also receives a `readalong-active` class. This
+can be used, as in the examples below, to keep the phrase highlighted after the user moves off or releases her
+finger.
+
+It is advisable to make the font size as large as possible for the contents of a Readalong element. This is
+especially true if the delimiter is set to `word`.
+
+
 ## Compatibility
 
 As of July 2015, The Speech Synthesis API is still [an unofficial proposal](http://caniuse.com/#feat=speech-synthesis).
-As such, right out of the box this component will only work on about half of all devices. Those include recent versions
-of Chrome, Opera, Safari, and iOS Safari. Other browsers will need a polyfill.
+As such, right out of the box this component will only work on about half of all browsers. Those include recent versions
+of Chrome, Opera, and Safari. Ostensibly, iOS Safari is supported, but Speech Synthesis seems to work in that browser
+only sporadically. All other browsers will need a polyfill.
 
 This component intentionally does not include a polyfill. There are several polyfill options, and the one you choose
 will depend on the needs of your project. The component also intentionally does check whether the Speech Synthesis

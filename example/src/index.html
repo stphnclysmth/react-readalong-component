@@ -53,12 +53,98 @@ SOFTWARE.
   </div>
 </div>
 <div class="container">
+  <div class="page-header">
+    <h1>Guide</h1>
+  </div>
 
-  <h1>Examples</h1>
+  <h2>Installation</h2>
+  <p>
+    The easiest way to use Readalong is to install it from NPM and include it in your own React build process (using
+    <a href="http://browserify.org">Browserify</a>, <a href="http://webpack.github.io/">Webpack</a>, etc).
+  </p>
+
+  <p>
+    You can also use the standalone build by including <mark>dist/react-component-readalong.js</mark> in your page.
+    If you use this, make sure you have already included React, and it is available as a global variable.
+  </p>
+
+  <pre><code>
+  npm install react-component-readalong --save
+  </code></pre>
+
+  <h2>Usage</h2>
+
+  <p>
+    The component provides a single React element, <code>Readalong</code>, that takes three properties and some text
+    content. The properties of <code>lang</code> and <code>delimiter</code> can be provided as attributes. The property
+    <code>voiceName</code> should be passed after the browser registers the available Speech Synthesis voices. The
+    browser will use its default voice until a valid, different voice is passed. The component will attempt to choose a
+    default voice based on the passed <code>lang</code> property, but this is hit-or-miss.
+  </p>
+
+  <p>
+    The output of the component receives three classes for use with styling. The outer wrapper has the class,
+    <code>readalong</code>. Every readable phrase is wrapped in a span with the <code>readalong-phrase</code> class.
+    While a phrase is being spoken, the corresponding span also receives a <code>readalong-active</code> class. This
+    can be used, as in the examples below, to keep the phrase highlighted after the user moves off or releases her
+    finger.
+  </p>
+
+  <p>
+    It is advisable to make the font size as large as possible for the contents of a Readalong element. This is
+    especially true if the delimiter is set to <code>word</code>.
+  </p>
+
+  <h2>Compatibility</h2>
+
+  <p>
+    <strong>As of July 2015, the Speech Synthesis API is still <a href="http://caniuse.com/#feat=speech-synthesis">an unofficial
+    proposal</a>.</strong> As such, right out of the box this component will only work in about half of all browsers. Those
+    include recent versions of Chrome, Opera, and Safari. Ostensibly, iOS Safari is supported, but Speech Synthesis
+    seems to work in that browser only sporadically. All other browsers will need a polyfill.
+  </p>
+
+  <p>
+    This component intentionally does not include a polyfill. There are several polyfill options, and the one you choose
+    will depend on the needs of your project. The component also intentionally does check whether the Speech Synthesis
+    API is available. Readalong assumes that both <code>window.speechSynthesis</code> and the
+    <code>SpeechSynthesisUtterance</code> object are available, and that they are up-to-date with the unofficial
+    proposal.
+  </p>
+
+  <h2>License</h2>
+
+  <p>
+    The constants, regular expressions, and punctuation encoding used in this project were originally lifted from
+    <a href="https://github.com/julianshapiro/blast">Blast.js</a>, built by Julian Shapiro. These have been modified
+    to fit the particular requirements of this project, including the addition of the Chinese punctuation.
+  </p>
+
+  <ul>
+    <li>Blast.js. MIT License. Copyright 2014 Julian Shapiro</li>
+    <li>Readalong. MIT License. Copyright 2015 Talking Bibles International and Stephen Clay Smith</li>
+  </ul>
+
+  <div class="page-header">
+    <h1>Examples</h1>
+  </div>
+
+  <p>
+    This delimiter and voice selection form that is shown in some of the following examples is <strong>not</strong>
+    included in the Readalong component. Consult the <code>DelimitedParagraph</code> component in the
+    <mark>examples</mark> directory for ideas about implementing something similar in your app.
+  </p>
 
   <h2>Basic Example</h2>
 
-  <div id="simple"></div>
+  <p class="lead">
+    Hover over or tap any word to hear it read out loud by your browser. The speech will continue even if the user
+    moves away or releases her finger.
+  </p>
+
+  <div class="panel panel-default">
+    <div id="simple" class="panel-body"></div>
+  </div>
 
   <h3><small>CODE</small></h3>
   <pre><code class="html">
@@ -68,19 +154,13 @@ SOFTWARE.
   &lt;/Readalong&gt;
   </code></pre>
 
-  <hr>
-
   <h2>Example with Silent Element</h2>
-  
+
   <p class="lead">Readalong will ignore any text wrapped in an element with the <code>silent</code> attribute.</p>
-  
-  <p class="text-muted">
-    This delimiter and voice selection form is not included in the Readalong component, but feel free
-    to consult the <code>DelimitedParagraph</code> component in the examples directory for ideas about
-    implementing something similar in your app.
-  </p>
-  
-  <div id="inner-element"></div>
+
+  <div class="panel panel-default">
+    <div id="inner-element" class="panel-body"></div>
+  </div>
 
   <h3><small>CODE</small></h3>
   <pre><code class="html">
@@ -101,19 +181,23 @@ SOFTWARE.
           drums, the crash of the cymbals&ndash;sounds that say listen to
           this, it is important.
         &lt;/p&gt;
-    
+
         &lt;footer silent&gt;&lt;cite&gt;Gary Provost&lt;/cite&gt;&lt;/footer&gt;
       &lt;/blockquote&gt;
     &lt;/Readalong&gt;
   </code></pre>
 
-  <hr>
 
   <h2>Example with Multiple Elements</h2>
 
-  <p class="lead">Readalong can process multiple blocks of text in the same component.</p>
+  <p class="lead">
+    Readalong can process multiple blocks of text in the same component. Attributes on those inner elements will be
+    passed through to the final output.
+  </p>
 
-  <div id="multiple-elements"></div>
+  <div class="panel panel-default">
+    <div id="multiple-elements" class="panel-body"></div>
+  </div>
 
   <h3><small>CODE</small></h3>
   <pre><code class="html">
@@ -127,30 +211,32 @@ SOFTWARE.
         &lt;span data-verse=&quot;4&quot;&gt;In him was life, and the life was the
         light of men.&lt;/span&gt; &lt;span data-verse=&quot;5&quot;&gt;The light shines in
         the darkness, and the darkness hasn&rsquo;t overcome it.&lt;/span&gt;
-      &lt;/p&gt; 
-          
+      &lt;/p&gt;
+
       &lt;p&gt;
-        &lt;span data-verse=&quot;6&quot;&gt;There came a man, sent from God, whose 
-        name was John.&lt;/span&gt; &lt;span data-verse=&quot;7&quot;&gt;The same came as 
-        a witness, that he might testify about the light, that all 
-        might believe through him.&lt;/span&gt; &lt;span data-verse=&quot;8&quot;&gt;He was 
-        not the light, but was sent that he might testify about the 
-        light.&lt;/span&gt; &lt;span data-verse=&quot;9&quot;&gt;The true light that 
+        &lt;span data-verse=&quot;6&quot;&gt;There came a man, sent from God, whose
+        name was John.&lt;/span&gt; &lt;span data-verse=&quot;7&quot;&gt;The same came as
+        a witness, that he might testify about the light, that all
+        might believe through him.&lt;/span&gt; &lt;span data-verse=&quot;8&quot;&gt;He was
+        not the light, but was sent that he might testify about the
+        light.&lt;/span&gt; &lt;span data-verse=&quot;9&quot;&gt;The true light that
         enlightens everyone was coming into the world.&lt;/span&gt;
       &lt;/p&gt;
     &lt;/Readalong&gt;
   </code></pre>
-  
-  <hr>
-  
+
+
   <h2>Example with Foreign Language</h2>
-  
+
   <p class="lead">Readalong supports any language that uses European or Chinese punctuation marks and is also supported
     by the browser's Speech Synthesis API.</p>
-  
+
   <h3>Spanish</h3>
-  <div id="spanish-language"></div>
-  
+
+  <div class="panel panel-default">
+    <div id="spanish-language" class="panel-body"></div>
+  </div>
+
   <h3><small>CODE</small></h3>
   <pre><code class="html">
     &lt;Readalong lang="es" delimiter="sentence"&gt;
@@ -178,10 +264,12 @@ SOFTWARE.
       &lt;/p&gt;
     &lt;/Readalong&gt;
   </code></pre>
-  
+
   <h3>Chinese</h3>
-  <div id="chinese-language"></div>
-  
+  <div class="panel panel-default">
+    <div id="chinese-language" class="panel-body"></div>
+  </div>
+
   <h3><small>CODE</small></h3>
   <pre><code class="html">
     &lt;Readalong lang="es" delimiter="sentence"&gt;
@@ -199,11 +287,6 @@ SOFTWARE.
       &lt;/p&gt;
     &lt;/Readalong&gt;
   </code></pre>
-  
-
-  <p class="footer">
-    &copy; 2015 Talking Bibles International and Clay Smith. MIT Licensed.
-  </p>
 </div>
 <script src="common.js"></script>
 <script src="bundle.js"></script>
