@@ -55,6 +55,18 @@ var Readalong = require('react-readalong-component');
 </Readalong>
 ```
 
+## Compatibility
+
+As of July 2015, The Speech Synthesis API is still [an unofficial proposal](http://caniuse.com/#feat=speech-synthesis).
+As such, right out of the box this component will only work on about half of all devices. Those include recent versions
+of Chrome, Opera, Safari, and iOS Safari. Other browsers will need a polyfill.
+
+This component intentionally does not include a polyfill. There are several polyfill options, and the one you choose
+will depend on the needs of your project. The component also intentionally does check whether the Speech Synthesis
+API is available. Readalong assumes that both `window.speechSynthesis` and the `SpeechSynthesisUtterance` object are
+available, and that they are up-to-date with the unofficial proposal.
+
+
 ## Todo
 
 - Add more information to Github page
