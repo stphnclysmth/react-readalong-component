@@ -24,11 +24,11 @@ Then open [`localhost:8000`](http://localhost:8000) in a browser.
 The easiest way to use Readalong is to install it from NPM and include it in your own React build process (using
 [Browserify](http://browserify.org), [Webpack](http://webpack.github.io/), etc).
 
-You can also use the standalone build by including `dist/react-component-readalong.js` in your page. If you use this,
+You can also use the standalone build by including `dist/react-readalong-component.js` in your page. If you use this,
 make sure you have already included React, and it is available as a global variable.
 
 ```
-npm install react-component-readalong --save
+npm install react-readalong-component --save
 ```
 
 ## Usage
@@ -39,9 +39,9 @@ the available Speech Synthesis voices. The browser will use its default voice un
 The component will attempt to choose a default voice based on the passed `lang` property, but this is hit-or-miss.
 
 <dl>
-<dt>lang</dt><dd><em>Any standard HTML language encoding code.</i> Used by the browser to select a default voice.</dd>
-<dt>delimiter</dt><dd><em>Either "word" or "sentence."</i> The size of the spoken chunks.</dd>
-<dt>voiceName</dt><dd><em>Name of any voice supported by the browser.</i> Overrides the default selected for language.</dd>
+<dt>lang</dt><dd><em>Any standard HTML language encoding code.</em> Used by the browser to select a default voice.</dd>
+<dt>delimiter</dt><dd><em>Either "word" or "sentence."</em> The size of the spoken chunks.</dd>
+<dt>voiceName</dt><dd><em>Name of any voice supported by the browser.</em> Overrides the default selected for language.</dd>
 </dl>
 
 ```javascript
