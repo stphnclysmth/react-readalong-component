@@ -26,7 +26,7 @@ var config = require('./gulpconfig');
 
 initGulpTasks(gulp, config);
 
-gulp.task('deploy', function() {
+gulp.task('deploy', ['build'], function() {
   return gulp.src('./example/dist/**/*')
     .pipe(ghPages());
 });
