@@ -25,24 +25,28 @@ require=(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof requ
 
  */
 
+'use strict';
+
 var React = require('react');
-var PureRenderMixin = require('react/addons').addons.PureRenderMixin;
 var Readalong = require('react-readalong-component');
 var DelimitedParagraph = require('./DelimitedParagraph');
 
 var Highlight = require('highlight.js');
 
 React.render((
-		React.createElement(Readalong, {lang: "en-US", delimiter: "word"}, 
-			"There once was an old woman who lived in a shoe. She was underwater on her mortgage. What would she do?"
+		React.createElement(Readalong, {delimiter: "word", lang: "en-US"}, 
+      "There was an old woman who lived in a shoe.", React.createElement("br", null), 
+      "She had so many children, she didn't know what to do.", React.createElement("br", null), 
+      "She gave them some broth without any bread;", React.createElement("br", null), 
+      "And whipped them all soundly and put them to bed.", React.createElement("br", null)
 		)
 ), document.getElementById('simple'));
 
 
 React.render((
-    React.createElement(DelimitedParagraph, {delimiter: "sentence"}, 
+    React.createElement(DelimitedParagraph, {delimiter: "sentence", lang: "en"}, 
       React.createElement("blockquote", null, 
-        React.createElement("p", null, "This sentence has five words. Here are 5.0 more words. Five-word sentences are fine. But several together" + ' ' +
+        React.createElement("p", null, "This sentence has five words. Here are five more words. Five-word sentences are fine. But several together" + ' ' +
           "become monotonous. Listen to what is happening. The writing is getting boring. The sound of it drones. It’s" + ' ' +
           "like a stuck record. The ear demands some variety. Now listen. I vary the sentence length, and I create" + ' ' +
           "music. Music. The writing sings. It has a pleasant rhythm, a lilt, a harmony. I use short sentences. And I" + ' ' +
@@ -57,7 +61,7 @@ React.render((
 ), document.getElementById('inner-element'));
 
 React.render((
-    React.createElement(DelimitedParagraph, null, 
+    React.createElement(DelimitedParagraph, {delimiter: "word", lang: "en"}, 
       React.createElement("p", null, React.createElement("span", {"data-verse": "1"}, "In the beginning was the Word, and the Word was" + ' ' +
 				"with God, and the Word was God."), " ", React.createElement("span", {"data-verse": "2"}, "The same was in" + ' ' +
 				"the beginning with God."), " ", React.createElement("span", {"data-verse": "3"}, "All things were made" + ' ' +
@@ -78,7 +82,7 @@ React.render((
 ), document.getElementById('multiple-elements'));
 
 React.render((
-	React.createElement(Readalong, {lang: "es", delimiter: "sentence"}, 
+	React.createElement(Readalong, {delimiter: "sentence", lang: "es"}, 
 		"En un lugar de la Mancha, de cuyo nombre no quiero acordarme," + ' ' +
 		"no ha mucho tiempo que vivía un hidalgo de los de lanza en" + ' ' +
 		"astillero, adarga antigua, rocín flaco y galgo corredor. Una" + ' ' +
@@ -103,17 +107,17 @@ React.render((
 ), document.getElementById('spanish-language'));
 
 React.render((
-	React.createElement(Readalong, {lang: "zh", delimiter: "sentence"}, 
+	React.createElement(Readalong, {delimiter: "sentence", lang: "zh"}, 
 		React.createElement("p", null, 
 			React.createElement("i", {silent: true}, "1"), "太 初 有 道 ， 道 与 神 同 在 ， 道 就 是 神 。", 
-			React.createElement("i", {silent: true}, "2"), "这 道 太 初 与 神 同 在 。 ", React.createElement("i", {silent: true}, "3"), "万 物 是" + ' ' + 
-			"藉 着 他 造 的 ； 凡 被 造 的 ， 没 有 一 样 不 是 藉 着 他 造 的 。",  
-			React.createElement("i", {silent: true}, "4"), "生 命 在 他 里 头 ， 这 生 命 就 是 人 的 光 。",  
-			React.createElement("i", {silent: true}, "5"), "光 照 在 黑 暗 里 ， 黑 暗 却 不 接 受 光 。",  
-			React.createElement("i", {silent: true}, "6"), "有 一 个 人 ， 是 从 神 那 里 差 来 的 ， 名 叫 约 翰 。",  
-			React.createElement("i", {silent: true}, "7"), "这 人 来 ， 为 要 作 见 证 ， 就 是 为 光 作 见 证 ，" + ' ' + 
-			"叫 众 人 因 他 可 以 信 。 ", React.createElement("i", {silent: true}, "8"), "他 不 是 那 光 ， 乃 是 要" + ' ' + 
-			"为 光 作 见 证 。 ", React.createElement("i", {silent: true}, "9"), "那 光 是 真 光 ， 照 亮 一 切 生" + ' ' + 
+			React.createElement("i", {silent: true}, "2"), "这 道 太 初 与 神 同 在 。 ", React.createElement("i", {silent: true}, "3"), "万 物 是" + ' ' +
+			"藉 着 他 造 的 ； 凡 被 造 的 ， 没 有 一 样 不 是 藉 着 他 造 的 。", 
+			React.createElement("i", {silent: true}, "4"), "生 命 在 他 里 头 ， 这 生 命 就 是 人 的 光 。", 
+			React.createElement("i", {silent: true}, "5"), "光 照 在 黑 暗 里 ， 黑 暗 却 不 接 受 光 。", 
+			React.createElement("i", {silent: true}, "6"), "有 一 个 人 ， 是 从 神 那 里 差 来 的 ， 名 叫 约 翰 。", 
+			React.createElement("i", {silent: true}, "7"), "这 人 来 ， 为 要 作 见 证 ， 就 是 为 光 作 见 证 ，" + ' ' +
+			"叫 众 人 因 他 可 以 信 。 ", React.createElement("i", {silent: true}, "8"), "他 不 是 那 光 ， 乃 是 要" + ' ' +
+			"为 光 作 见 证 。 ", React.createElement("i", {silent: true}, "9"), "那 光 是 真 光 ， 照 亮 一 切 生" + ' ' +
       "在 世 上 的 人 。"
 		)
 	)
@@ -122,7 +126,7 @@ React.render((
 Highlight.initHighlightingOnLoad();
 
 
-},{"./DelimitedParagraph":2,"highlight.js":4,"react":undefined,"react-readalong-component":undefined,"react/addons":131}],2:[function(require,module,exports){
+},{"./DelimitedParagraph":2,"highlight.js":4,"react":undefined,"react-readalong-component":undefined}],2:[function(require,module,exports){
 /**
 
  The MIT License (MIT)
@@ -149,90 +153,102 @@ Highlight.initHighlightingOnLoad();
 
  */
 
+'use strict';
+
 var React = require('react');
 var PureRenderMixin = require('react/addons').addons.PureRenderMixin;
+var LinkedStateMixin = require('react/addons').addons.LinkedStateMixin;
 var Readalong = require('react-readalong-component');
 
-var DeliminatedParagraph = React.createClass({displayName: "DeliminatedParagraph",
-	propTypes: {
-		word: React.PropTypes.oneOf(["word", "sentence"])	
-	},
+var DeliminatedParagraph = React.createClass({
+  displayName: 'DeliminatedParagraph',
 
-  mixins: [PureRenderMixin],
+  propTypes: {
+    children: React.PropTypes.node.isRequired,
+    delimiter: React.PropTypes.oneOf(['word', 'sentence']).isRequired,
+    lang: React.PropTypes.string.isRequired
+  },
 
-	getInitialState: function () {
-		return {
-			delimiter: this.props.delimiter || "word",
-			voices: [],
-			voice: null
-		}
-	},
+  mixins: [LinkedStateMixin, PureRenderMixin],
 
-	updateDelimiter: function (event) {
-		this.setState({
-			delimiter: event.target.value
-		});
-	},
+  getInitialState: function () {
+    return {
+      delimiter: this.props.delimiter,
+      voices: [],
+      voiceName: null
+    };
+  },
 
-	updateVoice: function (event) {
-		this.setState({
-			voice: event.target.value
-		});
-	},
+  componentWillMount: function () {
+    this._getVoices(0);
+  },
 
-	updateVoices: function() {
-		this.setState({
-			voices: window.speechSynthesis.getVoices()
-		});
-	},
+  _getVoices: function(attempt) {
+    var voices = window.speechSynthesis.getVoices();
 
-	componentWillMount: function () {
-		window.speechSynthesis.addEventListener('voiceschanged', this.updateVoices, false);
-	},
+    if (voices && voices.length > 0) {
+      voices.unshift('');
 
-	componentWillUnmount: function () {
-    window.speechSynthesis.removeEventListener('voiceschanged', this.updateVoices, false);
-	},
+      this.setState({
+        voices: voices
+      });
 
-	render: function () {
-    var voiceOptions = this.state.voices.map(function (voice) {
-			return React.createElement("option", {key: voice.name, value: voice.name}, voice.name);
-		});
+      return;
+    }
 
-		return (
-				React.createElement("div", null, 
-					React.createElement("div", {className: "well well-sm"}, 
-						React.createElement("form", {className: "form"}, 
-							React.createElement("div", {className: "row"}, 
-								React.createElement("div", {className: "form-group col-lg-4"}, 
-									React.createElement("label", {className: "control-label"}, "Delimiter"), 
-									React.createElement("select", {className: "form-control", value: this.state.delimiter, onChange: this.updateDelimiter}, 
-										React.createElement("option", {value: "sentence"}, "Sentence"), 
-										React.createElement("option", {value: "word"}, "Word")
-									)
-								), 
-		
-								React.createElement("div", {className: "form-group col-lg-4"}, 
-									React.createElement("label", {className: "control-label"}, "Voice"), 
-									React.createElement("select", {className: "form-control", value: this.state.voice, onChange: this.updateVoice}, 
-										voiceOptions
-									)
-								), 
-								
-								React.createElement("div", {className: "col-lg-4"}, 
-									
-									React.createElement("span", {className: "help-block"}, "The list of voices is populated by the voices available to your browser's SpeechSynthesis API.")
-								)
-							)
-						)
-					), 
+    if (attempt <= 30) {
+      setTimeout(this._getVoices.bind(this, ++attempt), 500);
 
-					React.createElement(Readalong, {lang: "en-US", voiceName: this.state.voice, delimiter: this.state.delimiter}, 
-						this.props.children
-					)
-				)
-		);
-	}
+      return;
+    }
+
+    console.error(this.displayName + ': Could not load Speech Synthesis voices before timeout.');
+  },
+
+  render: function () {
+    var voiceOptions = this.state.voices.map(function (voice, index) {
+      if (typeof voice === 'object') {
+        return React.createElement("option", {key: voice.name, value: voice.name}, voice.name);
+      }
+
+      return React.createElement("option", {key: index})
+    });
+
+    var disabled = (voiceOptions.length > 0) ? '' : 'disabled';
+
+    return (
+        React.createElement("div", null, 
+          React.createElement("div", {className: "well well-sm"}, 
+            React.createElement("form", {className: "form"}, 
+              React.createElement("div", {className: "row"}, 
+                React.createElement("div", {className: "form-group col-lg-4"}, 
+                  React.createElement("label", {className: "control-label"}, "Delimiter"), 
+                  React.createElement("select", {className: "form-control", valueLink: this.linkState('delimiter')}, 
+                    React.createElement("option", {value: "sentence"}, "Sentence"), 
+                    React.createElement("option", {value: "word"}, "Word")
+                  )
+                ), 
+
+                React.createElement("div", {className: "form-group col-lg-4"}, 
+                  React.createElement("label", {className: "control-label"}, "Voice"), 
+                  React.createElement("select", {className: "form-control", disabled: disabled, valueLink: this.linkState('voiceName')}, 
+                    voiceOptions
+                  )
+                ), 
+
+                React.createElement("div", {className: "col-lg-4"}, 
+                  React.createElement("span", {className: "help-block"}, "The list of voices is populated by the voices available to your browser's SpeechSynthesis API.")
+                )
+              )
+            )
+          ), 
+
+          React.createElement(Readalong, {delimiter: this.state.delimiter, lang: this.props.lang, voiceName: this.state.voiceName}, 
+            this.props.children
+          )
+        )
+    );
+  }
 });
 
 module.exports = DeliminatedParagraph;
