@@ -39,7 +39,8 @@
     "gulp-help": "^1.6.0",
     "highlight.js": "^8.6.0",
     "jest-cli": "^0.4.15",
-    "react-component-gulp-tasks": "^0.1.1"
+    "react-component-gulp-tasks": "^0.1.1",
+    "react-tools": "^0.13.3"
   },
   "browser": "src/Readalong.js",
   "browserify": {
@@ -50,8 +51,13 @@
   "browserify-shim": {
     "react": "global:React"
   },
+  "jest": {
+    "unmockedModulePathPatterns": ["react"],
+    "modulePathIgnorePatterns": ["/.publish/", "/dist/", "/example/"],
+    "testDirectoryName": "tests"
+  },
   "scripts": {
-    "test": "echo \"no tests yet\" && exit 0"
+    "test": "jest tests"
   },
   "keywords": [
     "react",
