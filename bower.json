@@ -1,12 +1,26 @@
 {
   "name": "react-readalong-component",
-  "main": "dist/react-readalong-component.min.js",
-  "version": "1.0.0",
-  "homepage": "https://github.com/TalkingBibles/react-readalong-component",
-  "authors": [
-    "Stephen Clay Smith"
-  ],
   "description": "A React component that uses the Speech Synthesis API to read text out loud by sentence or word while the user follows along with their mouse or finger",
+  "homepage": "https://github.com/TalkingBibles/react-readalong-component",
+  "version": "1.0.0",
+  "license": "MIT",
+  "main": "dist/react-readalong-component.min.js",
+  "authors": [
+    {
+      "name": "talkingbibles",
+      "email": "devops@talkingbibles.org",
+      "homepage": "http://www.talkingbibles.org/"
+    },
+    {
+      "name": "stphnclysmth",
+      "email": "s.clay.smith@gmail.com",
+      "homepage": "http://janineandclay.com/"
+    }
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/TalkingBibles/react-readalong-component"
+  },
   "moduleType": [
     "amd",
     "globals",
@@ -20,7 +34,6 @@
     "text-to-speech",
     "web speech"
   ],
-  "license": "MIT",
   "ignore": [
     ".editorconfig",
     ".gitignore",

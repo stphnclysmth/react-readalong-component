@@ -1,18 +1,34 @@
 {
   "name": "react-readalong-component",
-  "version": "1.0.0",
-  "private": false,
   "description": "A React component that uses the Speech Synthesis API to read text out loud by sentence or word while the user follows along with their mouse or finger",
-  "main": "src/Readalong.js",
-  "author": "Stephen Clay Smith",
+  "homepage": "https://talkingbibles.github.io/react-readalong-component",
+  "version": "1.0.0",
   "license": "MIT",
-  "homepage": "https://github.com/TalkingBibles/react-readalong-component",
+  "main": "src/Readalong.js",
+  "author": {
+    "name": "Talking Bibles",
+    "email": "devops@talkingbibles.org",
+    "url": "http://www.talkingbibles.org/"
+  },
+  "contributors": [
+    {
+      "name": "talkingbibles",
+      "email": "devops@talkingbibles.org",
+      "url": "http://www.talkingbibles.org/"
+    },
+    {
+      "name": "stphnclysmth",
+      "email": "s.clay.smith@gmail.com",
+      "url": "http://janineandclay.com/"
+    }
+  ],
   "repository": {
     "type": "git",
     "url": "https://github.com/TalkingBibles/react-readalong-component"
   },
   "bugs": {
-    "url": "https://github.com/TalkingBibles/react-readalong-component/issues"
+    "url": "https://github.com/TalkingBibles/react-readalong-component/issues",
+    "email": "devops@talkingbibles.org"
   },
   "dependencies": {
     "react": "^0.13.3",
@@ -22,6 +38,7 @@
     "gulp": "^3.8.10",
     "gulp-help": "^1.6.0",
     "highlight.js": "^8.6.0",
+    "jest-cli": "^0.4.15",
     "react-component-gulp-tasks": "^0.1.1"
   },
   "browser": "src/Readalong.js",
@@ -43,5 +60,9 @@
     "tts",
     "text-to-speech",
     "web speech"
-  ]
+  ],
+  "engines": {
+    "node": ">=0.10.32",
+    "npm": ">=1.4.28"
+  }
 }
