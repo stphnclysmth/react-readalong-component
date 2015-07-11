@@ -1,6 +1,6 @@
 {
   "name": "react-readalong-component",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "private": false,
   "description": "A React component that uses the Speech Synthesis API to read text out loud by sentence or word while the user follows along with their mouse or finger",
   "main": "src/Readalong.js",
@@ -20,7 +20,6 @@
   },
   "devDependencies": {
     "gulp": "^3.8.10",
-    "gulp-gh-pages": "^0.5.2",
     "gulp-help": "^1.6.0",
     "highlight.js": "^8.6.0",
     "react-component-gulp-tasks": "^0.1.1"
