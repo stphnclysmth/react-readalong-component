@@ -200,13 +200,6 @@ var Readalong = React.createClass({
 
   mixins: [PureRenderMixin],
 
-  getInitialState: function() {
-    return {
-      voice: getVoice(this.props.voiceName, this.props.lang),
-      delimiterRegex: getDelimiterRegex(this.props.delimiter)
-    };
-  },
-
   componentDidMount: function() {
     // Fire a speech synthesis event inside touchstart so that the component will
     // run for iOS users
@@ -223,14 +216,11 @@ var Readalong = React.createClass({
     }, false);
   },
 
-  componentWillReceiveProps: function(newProps) {
-    this.setState({
-      voice: getVoice(newProps.voiceName, newProps.lang),
-      delimiterRegex: getDelimiterRegex(newProps.delimiter)
-    });
-  },
-
   _phraseIndex: 0,
+
+  _voice: null,
+
+  _delimiterRegex: null,
 
   _onMouseOver: function(ref) {
     window.clearTimeout(mouseOverChildTimeout[ref]);
@@ -276,8 +266,8 @@ var Readalong = React.createClass({
       msg.text = phrase;
       msg.lang = this.props.lang;
 
-      if (typeof this.state.voice === 'object') {
-        msg.voice = this.state.voice;
+      if (typeof this._voice === 'object') {
+        msg.voice = this._voice;
       }
 
       msg.addEventListener('end', this._speechDidEnd.bind(this, ref));
@@ -342,7 +332,7 @@ var Readalong = React.createClass({
       child = encodePunctuation(child);
     }
 
-    var matches = child.split(this.state.delimiterRegex);
+    var matches = child.split(this._delimiterRegex);
 
     for (var i = 0; i < matches.length; i++) {
       var matchText = matches[i];
@@ -374,6 +364,8 @@ var Readalong = React.createClass({
 
   render: function() {
     this._phraseIndex = 0;
+    this._voice = getVoice(this.props.voiceName, this.props.lang);
+    this._delimiterRegex = getDelimiterRegex(this.props.delimiter);
 
     return React.createElement('div', {
           className: 'readalong',
