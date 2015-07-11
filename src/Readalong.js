@@ -5,7 +5,7 @@
  Copyright (c) 2015 Talking Bibles International and Stephen Clay Smith
 
  Permission is hereby granted, free of charge, to any person obtaining a copy
- of this software and associated documentation files (the "Software"), to deal
+ of this software and associated documentation files (the 'Software'), to deal
  in the Software without restriction, including without limitation the rights
  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  copies of the Software, and to permit persons to whom the Software is
@@ -14,7 +14,7 @@
  The above copyright notice and this permission notice shall be included in all
  copies or substantial portions of the Software.
 
- THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ THE SOFTWARE IS PROVIDED 'AS IS', WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
@@ -102,19 +102,19 @@ function getDelimiterRegex(delimiter) {
     case 'sentence':
       /* Matches phrases either ending in Latin alphabet punctuation or located at the end of the text. (Linebreaks are not considered punctuation.) */
       /* Note: If you don't want punctuation to demarcate a sentence match, replace the punctuation character with {{ASCII_CODE_FOR_DESIRED_PUNCTUATION}}. ASCII codes: .={{46}}, ?={{63}}, !={{33}} */
-      return /(?=\S)((?=[.。]{2,})?[^!?]+?[.…!?。！？]+|(?=\s+$)|$(?=\s*[′’'”″“"「『』」)»]+)*)/;
+      return /(?=\S)((?=[.。]{2,})?[^!?]+?[.…!?。！？]+|(?=\s+$)|$(?=\s*[′’'”″“'「『』」)»]+)*)/;
       /* RegExp explanation (Tip: Use Regex101.com to play around with this expression and see which strings it matches):
-       - Expanded view: /(?=\S) ( ([.]{2,})? [^!?]+? ([.…!?]+|(?=\s+$)|$) (\s*[′’'”″“")»]+)* )
+       - Expanded view: /(?=\S) ( ([.]{2,})? [^!?]+? ([.…!?]+|(?=\s+$)|$) (\s*[′’'”″“')»]+)* )
        - (?=\S) --> Match must contain a non-space character.
        - ([.]{2,})? --> Match may begin with a group of periods.
        - [^!?]+? --> Grab everything that isn't an unequivocally-terminating punctuation character, but stop at the following condition...
        - ([.…!?]+|(?=\s+$)|$) --> Match the last occurrence of sentence-final punctuation or the end of the text (optionally with left-side trailing spaces).
-       - (\s*[′’'”″“")»]+)* --> After the final punctuation, match any and all pairs of (optionally space-delimited) quotes and parentheses.
+       - (\s*[′’'”″“')»]+)* --> After the final punctuation, match any and all pairs of (optionally space-delimited) quotes and parentheses.
        */
 
     case 'element':
       /* Matches text between HTML tags. */
-      /* Note: Wrapping always occurs inside of elements, i.e. <b><span class="blast">Bolded text here</span></b>. */
+      /* Note: Wrapping always occurs inside of elements, i.e. <b><span class='blast'>Bolded text here</span></b>. */
       return /(?=\S)([\S\s]*\S)/;
     default:
       break;
@@ -264,7 +264,7 @@ var Readalong = React.createClass({
   },
 
   _speak: function(ref) {
-    console.log("about to speak");
+    console.log('about to speak');
     var child = this.refs[ref];
 
     window.speechSynthesis.cancel();
@@ -361,12 +361,13 @@ var Readalong = React.createClass({
 
       var ref = 'phrase' + this._phraseIndex;
       phrases.push(
-          <Phrase onMouseOut={this._onMouseOut.bind(this, ref)}
-                  onMouseOver={this._onMouseOver.bind(this, ref)}
-                  onTouchStart={this._onTouch.bind(this, ref)}
-                  ref={ref}>
-            {matchText}
-          </Phrase>
+          React.createElement(Phrase, {
+                onMouseOut: this._onMouseOut.bind(this, ref),
+                onMouseOver: this._onMouseOver.bind(this, ref),
+                onTouchStart: this._onTouch.bind(this, ref),
+                ref: ref},
+              matchText
+          )
       );
       this._phraseIndex++;
     }
@@ -377,10 +378,10 @@ var Readalong = React.createClass({
   render: function() {
     this._phraseIndex = 0;
 
-    return (
-        <div className='readalong' ref='readalong'>
-          {this._wrapChildren(this.props.children)}
-        </div>
+    return React.createElement('div', {
+          className: 'readalong',
+          ref: 'readalong'},
+        this._wrapChildren(this.props.children)
     );
   }
 

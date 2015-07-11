@@ -47,13 +47,12 @@ var Phrase = React.createClass({
   },
 
   render: function () {
-    return (
-        <span ariaHidden='true'
-              className={'readalong-phrase ' + this.state.activeClass}
-              onMouseOut={this.props.onMouseOut}
-              onMouseOver={this.props.onMouseOver}>
-          {this.props.children}
-        </span>
+    return React.createElement('span', {
+          ariaHidden: 'true',
+          className: 'readalong-phrase ' + this.state.activeClass,
+          onMouseOut: this.props.onMouseOut,
+          onMouseOver: this.props.onMouseOver},
+        this.props.children
     );
   }
 });
