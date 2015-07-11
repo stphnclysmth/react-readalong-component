@@ -1,5 +1,10 @@
 #  <img src="https://avatars3.githubusercontent.com/u/12140183" width="26" height="26"> React Readalong Component
 
+[![MIT License](https://img.shields.io/github/license/TalkingBibles/react-readalong-component.svg)](LICENSE)
+[![NPM](https://img.shields.io/npm/v/react-readalong-component.svg)](https://www.npmjs.com/package/react-readalong-component)
+[![Bower](https://img.shields.io/bower/v/react-readalong-component.svg)](bower.json)
+
+
 A React component that uses the Speech Synthesis API to read text out loud by sentence or word while the user follows
 along with their mouse or finger
 
