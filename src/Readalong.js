@@ -167,13 +167,11 @@ function getVoiceForLanguage(lang, preferLocal) {
 function getVoice(name, lang) {
   var namedVoice = getVoiceForName(name);
   if (typeof namedVoice === 'object') {
-    console.log('Readalong: Selected named voice', namedVoice);
     return namedVoice;
   }
 
   var languageVoice = getVoiceForLanguage(lang, false);
   if (typeof languageVoice === 'object') {
-    console.log('Readalong: Selected language voice', languageVoice);
     return languageVoice;
   }
 
@@ -264,7 +262,6 @@ var Readalong = React.createClass({
   },
 
   _speak: function(ref) {
-    console.log('about to speak');
     var child = this.refs[ref];
 
     window.speechSynthesis.cancel();
