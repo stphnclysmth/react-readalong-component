@@ -78,19 +78,17 @@ API is available. Readalong assumes that both `window.speechSynthesis` and the `
 available, and that they are up-to-date with the unofficial proposal.
 
 
-## Todo
-
-- Add more information to Github page
-- Add better documentation and usage information
-- Add tests
-
-
 ## License
 
-The constants, regular expressions, and punctuation encoding used in this project were originally lifted from Blast.js,
-built by Julian Shapiro. These have been modified to fit the particular requirements of this project, including the
-addition of the Chinese punctuation.
+This component was structured on top of [react-component-starter](https://github.com/JedWatson/react-component-starter)
+project by [Jed Watson](https://github.com/JedWatson).
 
-Blast.js. MIT License. Copyright 2014 Julian Shapiro
-MIT License. Copyright 2015 Talking Bibles International and Stephen Clay Smith
+The constants, regular expressions, and punctuation encoding used in this project were originally lifted from
+[Blast.js](https://github.com/julianshapiro/blast), built by [Julian Shapiro](https://github.com/julianshapiro). These have
+been modified to fit the particular requirements of this project, including the addition of the Chinese punctuation into the
+regular expression used to recognize sentence boundaries.
+
+react-component-starter. MIT License. Copyright 2014 Jed Watson.  
+Blast.js. MIT License. Copyright 2014 Julian Shapiro.  
+react-readalong-component. MIT License. Copyright 2015 Talking Bibles International and Stephen Clay Smith.
 
