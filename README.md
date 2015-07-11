@@ -1,5 +1,4 @@
-React Readalong Component
-=========================
+#  <img src="https://avatars3.githubusercontent.com/u/12140183" width="26" height="26"> React Readalong Component
 
 A React component that uses the Speech Synthesis API to read text out loud by sentence or word while the user follows
 along with their mouse or finger
