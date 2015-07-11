@@ -2,7 +2,7 @@
   "name": "react-readalong-component",
   "description": "A React component that uses the Speech Synthesis API to read text out loud by sentence or word while the user follows along with their mouse or finger",
   "homepage": "https://github.com/TalkingBibles/react-readalong-component",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "license": "MIT",
   "main": "dist/react-readalong-component.min.js",
   "authors": [
