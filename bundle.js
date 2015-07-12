@@ -21911,6 +21911,7 @@ function chunkString(str, length) {
  *************************/
 
 var Phrase = React.createClass({
+
   /*
    * Component setup
    */
@@ -21920,7 +21921,7 @@ var Phrase = React.createClass({
   propTypes: {
     children: React.PropTypes.node.isRequired,
     lang: React.PropTypes.string.isRequired,
-    voice: React.PropTypes.string
+    voice: React.PropTypes.object
   },
 
   mixins: [PureRenderMixin],
@@ -22006,8 +22007,8 @@ var Phrase = React.createClass({
       msg.text = phrase;
       msg.lang = this.props.lang;
 
-      if (typeof this._voice === 'object') {
-        msg.voice = this._voice;
+      if (typeof this.props.voice === 'object') {
+        msg.voice = this.props.voice;
       }
 
       msg.addEventListener('end', this._speechDidEnd);
