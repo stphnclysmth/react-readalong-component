@@ -3,6 +3,7 @@
 [![MIT License](https://img.shields.io/github/license/TalkingBibles/react-readalong-component.svg)](LICENSE)
 [![NPM](https://img.shields.io/npm/v/react-readalong-component.svg)](https://www.npmjs.com/package/react-readalong-component)
 [![Bower](https://img.shields.io/bower/v/react-readalong-component.svg)](bower.json)
+[![Dependencies](https://david-dm.org/TalkingBibles/react-readalong-component.svg)](https://david-dm.org/TalkingBibles/react-readalong-component)
 
 
 A React component that uses the Speech Synthesis API to read text out loud by sentence or word while the user follows
