@@ -7,7 +7,7 @@
  Copyright (c) 2015 Talking Bibles International and Stephen Clay Smith
 
  Permission is hereby granted, free of charge, to any person obtaining a copy
- of this software and associated documentation files (the "Software"), to deal
+ of this software and associated documentation files (the 'Software'), to deal
  in the Software without restriction, including without limitation the rights
  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  copies of the Software, and to permit persons to whom the Software is
@@ -16,7 +16,7 @@
  The above copyright notice and this permission notice shall be included in all
  copies or substantial portions of the Software.
 
- THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ THE SOFTWARE IS PROVIDED 'AS IS', WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
@@ -33,22 +33,10 @@ var PureRenderMixin = require('react/addons').addons.PureRenderMixin;
 var isValidElement = require('react/addons').isValidElement;
 var Phrase = require('./Phrase');
 
-/*************************
- Statics
- *************************/
-
-var mouseOverChild = {};
-var mouseOverChildTimeout = {};
-var speakingChild = {};
-
 
 /*************************
  Constants
  *************************/
-
-var timeoutDelay = 500;
-
-var maxPhraseLength = 180;
 
 var characterRanges = {
   latinLetters: '\\u0041-\\u005A\\u0061-\\u007A\\u00C0-\\u017F\\u0100-\\u01FF\\u0180-\\u027F'
@@ -104,19 +92,19 @@ function getDelimiterRegex(delimiter) {
     case 'sentence':
       /* Matches phrases either ending in Latin alphabet punctuation or located at the end of the text. (Linebreaks are not considered punctuation.) */
       /* Note: If you don't want punctuation to demarcate a sentence match, replace the punctuation character with {{ASCII_CODE_FOR_DESIRED_PUNCTUATION}}. ASCII codes: .={{46}}, ?={{63}}, !={{33}} */
-      return /(?=\S)((?=[.。]{2,})?[^!?]+?[.…!?。！？]+|(?=\s+$)|$(?=\s*[′’'”″“"「『』」)»]+)*)/;
+      return /(?=\S)((?=[.。]{2,})?[^!?]+?[.…!?。！？]+|(?=\s+$)|$(?=\s*[′’'”″“'「『』」)»]+)*)/;
       /* RegExp explanation (Tip: Use Regex101.com to play around with this expression and see which strings it matches):
-       - Expanded view: /(?=\S) ( ([.]{2,})? [^!?]+? ([.…!?]+|(?=\s+$)|$) (\s*[′’'”″“")»]+)* )
+       - Expanded view: /(?=\S) ( ([.]{2,})? [^!?]+? ([.…!?]+|(?=\s+$)|$) (\s*[′’'”″“')»]+)* )
        - (?=\S) --> Match must contain a non-space character.
        - ([.]{2,})? --> Match may begin with a group of periods.
        - [^!?]+? --> Grab everything that isn't an unequivocally-terminating punctuation character, but stop at the following condition...
        - ([.…!?]+|(?=\s+$)|$) --> Match the last occurrence of sentence-final punctuation or the end of the text (optionally with left-side trailing spaces).
-       - (\s*[′’'”″“")»]+)* --> After the final punctuation, match any and all pairs of (optionally space-delimited) quotes and parentheses.
+       - (\s*[′’'”″“')»]+)* --> After the final punctuation, match any and all pairs of (optionally space-delimited) quotes and parentheses.
        */
 
     case 'element':
       /* Matches text between HTML tags. */
-      /* Note: Wrapping always occurs inside of elements, i.e. <b><span class="blast">Bolded text here</span></b>. */
+      /* Note: Wrapping always occurs inside of elements, i.e. <b><span class='blast'>Bolded text here</span></b>. */
       return /(?=\S)([\S\s]*\S)/;
     default:
       break;
@@ -169,13 +157,11 @@ function getVoiceForLanguage(lang, preferLocal) {
 function getVoice(name, lang) {
   var namedVoice = getVoiceForName(name);
   if (typeof namedVoice === 'object') {
-    console.log('Readalong: Selected named voice', namedVoice);
     return namedVoice;
   }
 
   var languageVoice = getVoiceForLanguage(lang, false);
   if (typeof languageVoice === 'object') {
-    console.log('Readalong: Selected language voice', languageVoice);
     return languageVoice;
   }
 
@@ -183,16 +169,17 @@ function getVoice(name, lang) {
   return voices[0];
 }
 
-function chunkString(str, length) {
-  return str.match(new RegExp('[\\s\\S]{1,' + length + '}(?:\\s|$)', 'g'));
-}
-
 
 /*************************
- Components
+ Component
  *************************/
 
 var Readalong = React.createClass({
+
+  /*
+   * Component setup
+   */
+
   displayName: 'Readalong',
 
   propTypes: {
@@ -204,129 +191,18 @@ var Readalong = React.createClass({
 
   mixins: [PureRenderMixin],
 
-  getInitialState: function() {
-    return {
-      voice: getVoice(this.props.voiceName, this.props.lang),
-      delimiterRegex: getDelimiterRegex(this.props.delimiter)
-    };
-  },
 
-  componentDidMount: function() {
-    // Fire a speech synthesis event inside touchstart so that the component will
-    // run for iOS users
-    var el = this.refs.readalong.getDOMNode();
+  /*
+   * Variables
+   */
 
-    el.addEventListener('touchstart', function enableWithTouch() {
-      el.removeEventListener('touchstart', enableWithTouch, false);
+  _voice: null,
+  _delimiterRegex: null,
 
-      var msg = new SpeechSynthesisUtterance();
-      msg.text = '';
-      msg.volume = 0;
 
-      window.speechSynthesis.speak(msg);
-    }, false);
-  },
-
-  componentWillReceiveProps: function(newProps) {
-    this.setState({
-      voice: getVoice(newProps.voiceName, newProps.lang),
-      delimiterRegex: getDelimiterRegex(newProps.delimiter)
-    });
-  },
-
-  _phraseIndex: 0,
-
-  _onMouseOver: function(ref) {
-    window.clearTimeout(mouseOverChildTimeout[ref]);
-    delete mouseOverChildTimeout[ref];
-
-    var child = this.refs[ref];
-
-    if (mouseOverChild === child) { return; }
-    mouseOverChild = child;
-
-    this._speak(ref);
-  },
-
-  _onMouseOut: function(ref) {
-    if (window.speechSynthesis.speaking) {
-      mouseOverChildTimeout[ref] = window.setTimeout(function() {
-        mouseOverChild = null;
-        delete mouseOverChildTimeout[ref];
-      }, timeoutDelay);
-    } else {
-      mouseOverChild = null;
-    }
-  },
-
-  _onTouch: function(ref, event) {
-    event.stopPropagation();
-
-    this._speak(ref);
-  },
-
-  _speak: function(ref) {
-    console.log("about to speak");
-    var child = this.refs[ref];
-
-    window.speechSynthesis.cancel();
-
-    this._speechWillBegin(ref);
-
-    var textContent = child.getDOMNode().textContent;
-    var phrases = chunkString(textContent, maxPhraseLength);
-
-    var utterances = phrases.map(function(phrase) {
-      var msg = new SpeechSynthesisUtterance();
-      msg.text = phrase;
-      msg.lang = this.props.lang;
-
-      if (typeof this.state.voice === 'object') {
-        msg.voice = this.state.voice;
-      }
-
-      msg.addEventListener('end', this._speechDidEnd.bind(this, ref));
-      msg.addEventListener('error', this._speechDidError.bind(this, ref));
-
-      return msg;
-    }, this);
-
-    utterances.forEach(function (utterance) {
-      window.speechSynthesis.speak(utterance);
-    });
-  },
-
-  _speechWillBegin: function(ref) {
-    var child = this.refs[ref];
-
-    speakingChild = child;
-
-    child.setState({
-      activeClass: 'readalong-active'
-    });
-  },
-
-  _speechDidEnd: function(ref) {
-    var child = this.refs[ref];
-
-    if (window.speechSynthesis.speaking) {
-      if (speakingChild === child) {
-        return;
-      }
-    } else {
-      speakingChild = null;
-    }
-
-    child.setState({
-      activeClass: ''
-    });
-  },
-
-  _speechDidError: function(ref, error) {
-    console.error(error);
-
-    this._speechDidEnd(ref);
-  },
+  /*
+   * Render
+   */
 
   _wrapChildren: function (children) {
     return React.Children.map(children, this._wrapChild);
@@ -347,7 +223,7 @@ var Readalong = React.createClass({
       child = encodePunctuation(child);
     }
 
-    var matches = child.split(this.state.delimiterRegex);
+    var matches = child.split(this._delimiterRegex);
 
     for (var i = 0; i < matches.length; i++) {
       var matchText = matches[i];
@@ -361,28 +237,26 @@ var Readalong = React.createClass({
         continue;
       }
 
-      var ref = 'phrase' + this._phraseIndex;
       phrases.push(
-          React.createElement(Phrase, {onMouseOut: this._onMouseOut.bind(this, ref), 
-                  onMouseOver: this._onMouseOver.bind(this, ref), 
-                  onTouchStart: this._onTouch.bind(this, ref), 
-                  ref: ref}, 
-            matchText
-          )
+        React.createElement(Phrase, {
+          ref: 'phrase' + i,
+          voice: this._voice,
+          lang: this.props.lang
+        }, matchText)
       );
-      this._phraseIndex++;
     }
 
     return phrases;
   },
 
   render: function() {
-    this._phraseIndex = 0;
+    this._voice = getVoice(this.props.voiceName, this.props.lang);
+    this._delimiterRegex = getDelimiterRegex(this.props.delimiter);
 
-    return (
-        React.createElement("div", {className: "readalong", ref: "readalong"}, 
-          this._wrapChildren(this.props.children)
-        )
+    return React.createElement('div', {
+          className: 'readalong',
+          ref: 'readalong'},
+        this._wrapChildren(this.props.children)
     );
   }
 
@@ -22284,13 +22158,39 @@ module.exports = warning;
 var React = (typeof window !== "undefined" ? window.React : typeof global !== "undefined" ? global.React : null);
 var PureRenderMixin = require('react/addons').addons.PureRenderMixin;
 
+
+/*************************
+ Constants
+ *************************/
+
+var timeoutDelay = 500;
+var maxPhraseLength = 180;
+
+
+/*************************
+ Utilities
+ *************************/
+
+function chunkString(str, length) {
+  return str.match(new RegExp('[\\s\\S]{1,' + length + '}(?:\\s|$)', 'g'));
+}
+
+
+/*************************
+ Component
+ *************************/
+
 var Phrase = React.createClass({
+  /*
+   * Component setup
+   */
+
   displayName: 'Phrase',
 
   propTypes: {
-    children: React.PropTypes.node,
-    onMouseOut: React.PropTypes.func.isRequired,
-    onMouseOver: React.PropTypes.func.isRequired
+    children: React.PropTypes.node.isRequired,
+    lang: React.PropTypes.string.isRequired,
+    voice: React.PropTypes.string
   },
 
   mixins: [PureRenderMixin],
@@ -22301,14 +22201,124 @@ var Phrase = React.createClass({
     };
   },
 
+  componentDidMount: function() {
+    var el = this.getDOMNode();
+    el.addEventListener('pointerenter', this._pointerEnter);
+    el.addEventListener('pointerleave', this._pointerLeave);
+  },
+
+
+  /*
+   * Variables
+   */
+
+  _leaveTimeout: null,
+
+
+  /*
+   * User interface
+   */
+
+  _activatePhrase: function() {
+    this.setState({
+      activeClass: 'readalong-active'
+    });
+  },
+
+  _deactivatePhrase: function() {
+    this.setState({
+      activeClass: ''
+    });
+  },
+
+
+  /*
+   * Pointer Events
+   */
+
+  _pointerEnter: function() {
+    // Do not speak again if this is a reentry
+    if (typeof this._leaveTimeout !== 'number') {
+      this._speak();
+    } else {
+      this._stopWaitingForReentry();
+    }
+
+    this._activatePhrase();
+  },
+
+  _pointerLeave: function() {
+    if (window.speechSynthesis.speaking) {
+      this._leaveTimeout = window.setTimeout(this._stopWaitingForReentry, timeoutDelay);
+
+      return;
+    }
+
+    this._deactivatePhrase();
+  },
+
+  _stopWaitingForReentry: function() {
+    delete this._leaveTimeout;
+  },
+
+
+  /*
+   * Speech Synthesis
+   */
+
+  _speak: function() {
+    window.speechSynthesis.cancel();
+
+    var phrases = chunkString(this.props.children, maxPhraseLength);
+
+    var utterances = phrases.map(function(phrase) {
+      var msg = new SpeechSynthesisUtterance();
+      msg.text = phrase;
+      msg.lang = this.props.lang;
+
+      if (typeof this._voice === 'object') {
+        msg.voice = this._voice;
+      }
+
+      msg.addEventListener('end', this._speechDidEnd);
+      msg.addEventListener('error', this._speechDidError);
+
+      return msg;
+    }, this);
+
+    utterances.forEach(function (utterance) {
+      window.speechSynthesis.speak(utterance);
+    });
+  },
+
+
+  /*
+   * Speech Synthesis callbacks
+   */
+
+  _speechDidEnd: function() {
+    this._stopWaitingForReentry();
+    this._deactivatePhrase();
+  },
+
+  _speechDidError: function(error) {
+    console.error(error);
+
+    this._speechDidEnd();
+  },
+
+
+  /*
+   * Render
+   */
+
   render: function () {
-    return (
-        React.createElement("span", {ariaHidden: "true", 
-              className: 'readalong-phrase ' + this.state.activeClass, 
-              onMouseOut: this.props.onMouseOut, 
-              onMouseOver: this.props.onMouseOver}, 
-          this.props.children
-        )
+    return React.createElement('span', {
+          ariaHidden: 'true',
+          touchAction: 'none',
+          className: 'readalong-phrase ' + this.state.activeClass
+        },
+        this.props.children
     );
   }
 });
