@@ -29,13 +29,39 @@
 var React = require('react');
 var PureRenderMixin = require('react/addons').addons.PureRenderMixin;
 
+
+/*************************
+ Constants
+ *************************/
+
+var timeoutDelay = 500;
+var maxPhraseLength = 180;
+
+
+/*************************
+ Utilities
+ *************************/
+
+function chunkString(str, length) {
+  return str.match(new RegExp('[\\s\\S]{1,' + length + '}(?:\\s|$)', 'g'));
+}
+
+
+/*************************
+ Component
+ *************************/
+
 var Phrase = React.createClass({
+  /*
+   * Component setup
+   */
+
   displayName: 'Phrase',
 
   propTypes: {
-    children: React.PropTypes.node,
-    onMouseOut: React.PropTypes.func.isRequired,
-    onMouseOver: React.PropTypes.func.isRequired
+    children: React.PropTypes.node.isRequired,
+    lang: React.PropTypes.string.isRequired,
+    voice: React.PropTypes.string
   },
 
   mixins: [PureRenderMixin],
@@ -46,12 +72,123 @@ var Phrase = React.createClass({
     };
   },
 
+  componentDidMount: function() {
+    var el = this.getDOMNode();
+    el.addEventListener('pointerenter', this._pointerEnter);
+    el.addEventListener('pointerleave', this._pointerLeave);
+  },
+
+
+  /*
+   * Variables
+   */
+
+  _leaveTimeout: null,
+
+
+  /*
+   * User interface
+   */
+
+  _activatePhrase: function() {
+    this.setState({
+      activeClass: 'readalong-active'
+    });
+  },
+
+  _deactivatePhrase: function() {
+    this.setState({
+      activeClass: ''
+    });
+  },
+
+
+  /*
+   * Pointer Events
+   */
+
+  _pointerEnter: function() {
+    // Do not speak again if this is a reentry
+    if (typeof this._leaveTimeout !== 'number') {
+      this._speak();
+    } else {
+      this._stopWaitingForReentry();
+    }
+
+    this._activatePhrase();
+  },
+
+  _pointerLeave: function() {
+    if (window.speechSynthesis.speaking) {
+      this._leaveTimeout = window.setTimeout(this._stopWaitingForReentry, timeoutDelay);
+
+      return;
+    }
+
+    this._deactivatePhrase();
+  },
+
+  _stopWaitingForReentry: function() {
+    delete this._leaveTimeout;
+  },
+
+
+  /*
+   * Speech Synthesis
+   */
+
+  _speak: function() {
+    window.speechSynthesis.cancel();
+
+    var phrases = chunkString(this.props.children, maxPhraseLength);
+
+    var utterances = phrases.map(function(phrase) {
+      var msg = new SpeechSynthesisUtterance();
+      msg.text = phrase;
+      msg.lang = this.props.lang;
+
+      if (typeof this._voice === 'object') {
+        msg.voice = this._voice;
+      }
+
+      msg.addEventListener('end', this._speechDidEnd);
+      msg.addEventListener('error', this._speechDidError);
+
+      return msg;
+    }, this);
+
+    utterances.forEach(function (utterance) {
+      window.speechSynthesis.speak(utterance);
+    });
+  },
+
+
+  /*
+   * Speech Synthesis callbacks
+   */
+
+  _speechDidEnd: function() {
+    this._stopWaitingForReentry();
+    this._deactivatePhrase();
+  },
+
+  _speechDidError: function(error) {
+    console.error(error);
+
+    this._speechDidEnd();
+  },
+
+
+  /*
+   * Render
+   */
+
   render: function () {
     return React.createElement('span', {
           ariaHidden: 'true',
-          className: 'readalong-phrase ' + this.state.activeClass,
-          onMouseOut: this.props.onMouseOut,
-          onMouseOver: this.props.onMouseOver},
+          touchAction: 'none',
+          className: 'readalong-phrase ' + this.state.activeClass
+        },
         this.props.children
     );
   }

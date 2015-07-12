@@ -72,12 +72,22 @@ especially true if the delimiter is set to `word`.
 
 ## Compatibility
 
-As of July 2015, The Speech Synthesis API is still [an unofficial proposal](http://caniuse.com/#feat=speech-synthesis).
-As such, right out of the box this component will only work on about half of all browsers. Those include recent versions
-of Chrome, Opera, and Safari. Ostensibly, iOS Safari is supported, but Speech Synthesis seems to work in that browser
-only sporadically. All other browsers will need a polyfill.
+This component depends on two experimental, draft APIs: [Pointer Events](http://caniuse.com/#feat=pointer)
+and [Speech Synthesis](http://caniuse.com/#feat=speech-synthesis).
 
-This component intentionally does not include a polyfill. There are several polyfill options, and the one you choose
+**As of July 12, 2015, the Web Speech API is still an unofficial proposal.** As such, right out
+of the box this component will only work in about half of all browsers. Those include recent versions of Chrome,
+Opera, and Safari. Ostensibly, iOS Safari is supported, but Speech Synthesis seems to work in that browser only
+sporadically. All other browsers will need a polyfill. There is no polyfill for Speech Synthesis currently
+installed on this demonstration page.
+
+Again, as of the time of this commit, the Pointer Events API is very poorly supported across all browsers. Only
+IE and very late version Firefox have implemented it. **There's no getting away without a polyfill for Pointer
+Events.** They power the cursor/finger recognition. Fortunately, Google/jQuery have put together a fantastic
+polyfill called [PEP](https://github.com/jquery/PEP), which is providing cross-browser capability for
+this page. It does not require jQuery as a dependency.
+
+This component intentionally does not include polyfills. There are many polyfill options, and the one you choose
 will depend on the needs of your project. The component also intentionally does check whether the Speech Synthesis
 API is available. Readalong assumes that both `window.speechSynthesis` and the `SpeechSynthesisUtterance` object are
 available, and that they are up-to-date with the unofficial proposal.
@@ -93,7 +103,7 @@ The constants, regular expressions, and punctuation encoding used in this projec
 been modified to fit the particular requirements of this project, including the addition of the Chinese punctuation into the
 regular expression used to recognize sentence boundaries.
 
-react-component-starter. MIT License. Copyright 2014 Jed Watson.  
-Blast.js. MIT License. Copyright 2014 Julian Shapiro.  
+react-component-starter. MIT License. Copyright 2014 Jed Watson.
+Blast.js. MIT License. Copyright 2014 Julian Shapiro.
 react-readalong-component. MIT License. Copyright 2015 Talking Bibles International and Stephen Clay Smith.
 

@@ -31,22 +31,10 @@ var PureRenderMixin = require('react/addons').addons.PureRenderMixin;
 var isValidElement = require('react/addons').isValidElement;
 var Phrase = require('./Phrase');
 
-/*************************
- Statics
- *************************/
-
-var mouseOverChild = {};
-var mouseOverChildTimeout = {};
-var speakingChild = {};
-
 
 /*************************
  Constants
  *************************/
-
-var timeoutDelay = 500;
-
-var maxPhraseLength = 180;
 
 var characterRanges = {
   latinLetters: '\\u0041-\\u005A\\u0061-\\u007A\\u00C0-\\u017F\\u0100-\\u01FF\\u0180-\\u027F'
@@ -179,16 +167,17 @@ function getVoice(name, lang) {
   return voices[0];
 }
 
-function chunkString(str, length) {
-  return str.match(new RegExp('[\\s\\S]{1,' + length + '}(?:\\s|$)', 'g'));
-}
-
 
 /*************************
- Components
+ Component
  *************************/
 
 var Readalong = React.createClass({
+
+  /*
+   * Component setup
+   */
+
   displayName: 'Readalong',
 
   propTypes: {
@@ -200,118 +189,18 @@ var Readalong = React.createClass({
 
   mixins: [PureRenderMixin],
 
-  componentDidMount: function() {
-    // Fire a speech synthesis event inside touchstart so that the component will
-    // run for iOS users
-    var el = this.refs.readalong.getDOMNode();
 
-    el.addEventListener('touchstart', function enableWithTouch() {
-      el.removeEventListener('touchstart', enableWithTouch, false);
-
-      var msg = new SpeechSynthesisUtterance();
-      msg.text = '';
-      msg.volume = 0;
-
-      window.speechSynthesis.speak(msg);
-    }, false);
-  },
-
-  _phraseIndex: 0,
+  /*
+   * Variables
+   */
 
   _voice: null,
-
   _delimiterRegex: null,
 
-  _onMouseOver: function(ref) {
-    window.clearTimeout(mouseOverChildTimeout[ref]);
-    delete mouseOverChildTimeout[ref];
 
-    var child = this.refs[ref];
-
-    if (mouseOverChild === child) { return; }
-    mouseOverChild = child;
-
-    this._speak(ref);
-  },
-
-  _onMouseOut: function(ref) {
-    if (window.speechSynthesis.speaking) {
-      mouseOverChildTimeout[ref] = window.setTimeout(function() {
-        mouseOverChild = null;
-        delete mouseOverChildTimeout[ref];
-      }, timeoutDelay);
-    } else {
-      mouseOverChild = null;
-    }
-  },
-
-  _onTouch: function(ref, event) {
-    event.stopPropagation();
-
-    this._speak(ref);
-  },
-
-  _speak: function(ref) {
-    var child = this.refs[ref];
-
-    window.speechSynthesis.cancel();
-
-    this._speechWillBegin(ref);
-
-    var textContent = child.getDOMNode().textContent;
-    var phrases = chunkString(textContent, maxPhraseLength);
-
-    var utterances = phrases.map(function(phrase) {
-      var msg = new SpeechSynthesisUtterance();
-      msg.text = phrase;
-      msg.lang = this.props.lang;
-
-      if (typeof this._voice === 'object') {
-        msg.voice = this._voice;
-      }
-
-      msg.addEventListener('end', this._speechDidEnd.bind(this, ref));
-      msg.addEventListener('error', this._speechDidError.bind(this, ref));
-
-      return msg;
-    }, this);
-
-    utterances.forEach(function (utterance) {
-      window.speechSynthesis.speak(utterance);
-    });
-  },
-
-  _speechWillBegin: function(ref) {
-    var child = this.refs[ref];
-
-    speakingChild = child;
-
-    child.setState({
-      activeClass: 'readalong-active'
-    });
-  },
-
-  _speechDidEnd: function(ref) {
-    var child = this.refs[ref];
-
-    if (window.speechSynthesis.speaking) {
-      if (speakingChild === child) {
-        return;
-      }
-    } else {
-      speakingChild = null;
-    }
-
-    child.setState({
-      activeClass: ''
-    });
-  },
-
-  _speechDidError: function(ref, error) {
-    console.error(error);
-
-    this._speechDidEnd(ref);
-  },
+  /*
+   * Render
+   */
 
   _wrapChildren: function (children) {
     return React.Children.map(children, this._wrapChild);
@@ -346,24 +235,19 @@ var Readalong = React.createClass({
         continue;
       }
 
-      var ref = 'phrase' + this._phraseIndex;
       phrases.push(
-          React.createElement(Phrase, {
-                onMouseOut: this._onMouseOut.bind(this, ref),
-                onMouseOver: this._onMouseOver.bind(this, ref),
-                onTouchStart: this._onTouch.bind(this, ref),
-                ref: ref},
-              matchText
-          )
+        React.createElement(Phrase, {
+          ref: 'phrase' + i,
+          voice: this._voice,
+          lang: this.props.lang
+        }, matchText)
       );
-      this._phraseIndex++;
     }
 
     return phrases;
   },
 
   render: function() {
-    this._phraseIndex = 0;
     this._voice = getVoice(this.props.voiceName, this.props.lang);
     this._delimiterRegex = getDelimiterRegex(this.props.delimiter);
 

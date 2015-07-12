@@ -31,6 +31,7 @@ SOFTWARE.
   <title>React Readalong Component</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="app.css">
+  <script src="https://code.jquery.com/pep/0.3.0/pep.js"></script>
   <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.6/highlight.min.js"></script>
   <script>hljs.initHighlightingOnLoad();</script>
 </head>
@@ -97,15 +98,29 @@ SOFTWARE.
 
   <h2>Compatibility</h2>
 
-  <p>
-    <strong>As of July 2015, the Speech Synthesis API is still <a href="http://caniuse.com/#feat=speech-synthesis">an unofficial
-    proposal</a>.</strong> As such, right out of the box this component will only work in about half of all browsers. Those
-    include recent versions of Chrome, Opera, and Safari. Ostensibly, iOS Safari is supported, but Speech Synthesis
-    seems to work in that browser only sporadically. All other browsers will need a polyfill.
+  <p class="lead">
+    This component depends on two experimental, draft APIs: <a href="http://caniuse.com/#feat=pointer">Pointer
+    Events</a> and <a href="http://caniuse.com/#feat=speech-synthesis">Speech Synthesis</a>.
   </p>
 
   <p>
-    This component intentionally does not include a polyfill. There are several polyfill options, and the one you choose
+    <strong>As of July 12, 2015, the Web Speech API is still an unofficial proposal.</strong> As such, right out
+    of the box this component will only work in about half of all browsers. Those include recent versions of Chrome,
+    Opera, and Safari. Ostensibly, iOS Safari is supported, but Speech Synthesis seems to work in that browser only
+    sporadically. All other browsers will need a polyfill. There is no polyfill for Speech Synthesis currently
+    installed on this demonstration page.
+  </p>
+
+  <p>
+    Again, as of the time of this commit, the Pointer Events API is very poorly supported across all browsers. Only
+    IE and very late version Firefox have implemented it. <strong>There's no getting away without a polyfill for Pointer
+    Events.</strong> They power the cursor/finger recognition. Fortunately, Google/jQuery have put together a fantastic
+    polyfill called <a href="https://github.com/jquery/PEP">PEP</a>, which is providing cross-browser capability for
+    this page. It does not require jQuery as a dependency.
+  </p>
+
+  <p>
+    This component intentionally does not include polyfills. There are many polyfill options, and the one you choose
     will depend on the needs of your project. The component also intentionally does check whether the Speech Synthesis
     API is available. Readalong assumes that both <code>window.speechSynthesis</code> and the
     <code>SpeechSynthesisUtterance</code> object are available, and that they are up-to-date with the unofficial
@@ -287,6 +302,29 @@ SOFTWARE.
       &lt;/p&gt;
     &lt;/Readalong&gt;
   </code></pre>
+
+  <footer>
+    <div class="row">
+      <div class="col-lg-12">
+        <ul class="list-inline">
+          <li class="pull-right"><a href="#top">Back to top</a></li>
+          <li><a href="http://www.talkingbibles.org/">Site</a></li>
+          <li><a href="https://twitter.com/Talking_Bibles">Twitter</a></li>
+          <li><a href="https://www.facebook.com/talkingbibles">Facebook</a></li>
+          <li><a href="https://github.com/TalkingBibles/react-readalong-component">GitHub</a></li>
+        </ul>
+
+        <p>
+          Made by <a href="http://janineandclay.com/">Clay Smith</a> for <a href="http://www.talkingbibles.org">Talking
+          Bibles</a>. Email him at <a href="mailto:clay@talkingbibles.org?subject=Readalong">clay@talkingbibles.org</a>.
+        </p>
+
+        <p>
+          Code released under the MIT License.
+        </p>
+      </div>
+    </div>
+  </footer>
 </div>
 <script src="common.js"></script>
 <script src="bundle.js"></script>
