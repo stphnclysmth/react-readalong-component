@@ -22160,6 +22160,17 @@ var PureRenderMixin = require('react/addons').addons.PureRenderMixin;
 
 
 /*************************
+ React custom attrs shim
+ *************************/
+
+var DOMProperty = require('react/lib/ReactInjection').DOMProperty;
+DOMProperty.injectDOMPropertyConfig({
+  Properties: {
+    'touchAction': DOMProperty.MUST_USE_ATTRIBUTE
+  }
+});
+
+/*************************
  Constants
  *************************/
 
@@ -22204,6 +22215,9 @@ var Phrase = React.createClass({
 
   componentDidMount: function() {
     var el = this.getDOMNode();
+
+    this.getDOMNode().setAttribute('touch-action', 'none');
+
     el.addEventListener('pointerenter', this._pointerEnter);
     el.addEventListener('pointerleave', this._pointerLeave);
   },
@@ -22328,5 +22342,5 @@ module.exports = Phrase;
 
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"react/addons":3}]},{},[1])(1)
+},{"react/addons":3,"react/lib/ReactInjection":72}]},{},[1])(1)
 });

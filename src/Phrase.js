@@ -31,6 +31,17 @@ var PureRenderMixin = require('react/addons').addons.PureRenderMixin;
 
 
 /*************************
+ React custom attrs shim
+ *************************/
+
+var DOMProperty = require('react/lib/ReactInjection').DOMProperty;
+DOMProperty.injectDOMPropertyConfig({
+  Properties: {
+    'touchAction': DOMProperty.MUST_USE_ATTRIBUTE
+  }
+});
+
+/*************************
  Constants
  *************************/
 
@@ -75,6 +86,9 @@ var Phrase = React.createClass({
 
   componentDidMount: function() {
     var el = this.getDOMNode();
+
+    this.getDOMNode().setAttribute('touch-action', 'none');
+
     el.addEventListener('pointerenter', this._pointerEnter);
     el.addEventListener('pointerleave', this._pointerLeave);
   },
