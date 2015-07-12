@@ -21890,6 +21890,17 @@ var PureRenderMixin = require('react/addons').addons.PureRenderMixin;
 
 
 /*************************
+ React custom attrs shim
+ *************************/
+
+var DOMProperty = require('react/lib/ReactInjection').DOMProperty;
+DOMProperty.injectDOMPropertyConfig({
+  Properties: {
+    'touchAction': DOMProperty.MUST_USE_ATTRIBUTE
+  }
+});
+
+/*************************
  Constants
  *************************/
 
@@ -21934,6 +21945,9 @@ var Phrase = React.createClass({
 
   componentDidMount: function() {
     var el = this.getDOMNode();
+
+    this.getDOMNode().setAttribute('touch-action', 'none');
+
     el.addEventListener('pointerenter', this._pointerEnter);
     el.addEventListener('pointerleave', this._pointerLeave);
   },
@@ -22057,7 +22071,7 @@ var Phrase = React.createClass({
 module.exports = Phrase;
 
 
-},{"react":undefined,"react/addons":2}],"react-readalong-component":[function(require,module,exports){
+},{"react":undefined,"react/addons":2,"react/lib/ReactInjection":71}],"react-readalong-component":[function(require,module,exports){
 /**
 
  The MIT License (MIT)
