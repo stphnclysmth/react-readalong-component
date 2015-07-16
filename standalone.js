@@ -22218,8 +22218,8 @@ var Phrase = React.createClass({
 
     this.getDOMNode().setAttribute('touch-action', 'none');
 
-    el.addEventListener('pointerenter', this._pointerEnter);
-    el.addEventListener('pointerleave', this._pointerLeave);
+    el.addEventListener('pointerover', this._pointerEnter);
+    el.addEventListener('pointerout', this._pointerLeave);
   },
 
 
@@ -22251,7 +22251,9 @@ var Phrase = React.createClass({
    * Pointer Events
    */
 
-  _pointerEnter: function() {
+  _pointerEnter: function(e) {
+    e.stopPropagation();
+
     // Do not speak again if this is a reentry
     if (typeof this._leaveTimeout !== 'number') {
       this._speak();
@@ -22262,9 +22264,13 @@ var Phrase = React.createClass({
     this._activatePhrase();
   },
 
-  _pointerLeave: function() {
+  _pointerLeave: function(e) {
+    e.stopPropagation();
+
     if (window.speechSynthesis.speaking) {
-      this._leaveTimeout = window.setTimeout(this._stopWaitingForReentry, timeoutDelay);
+      if (typeof this._leaveTimeout !== 'number') {
+        this._leaveTimeout = window.setTimeout(this._stopWaitingForReentry, timeoutDelay);
+      }
 
       return;
     }
