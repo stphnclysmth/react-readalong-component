@@ -28,7 +28,7 @@
 
 'use strict';
 
-var React = (typeof window !== "undefined" ? window.React : typeof global !== "undefined" ? global.React : null);
+var React = (typeof window !== "undefined" ? window['React'] : typeof global !== "undefined" ? global['React'] : null);
 var PureRenderMixin = require('react/addons').addons.PureRenderMixin;
 var isValidElement = require('react/addons').isValidElement;
 var Phrase = require('./Phrase');
@@ -250,7 +250,11 @@ var Readalong = React.createClass({
   },
 
   render: function() {
-    this._voice = getVoice(this.props.voiceName, this.props.lang);
+    // Enable server-side rendering
+    if (typeof window === 'object') {
+      this._voice = getVoice(this.props.voiceName, this.props.lang);
+    }
+
     this._delimiterRegex = getDelimiterRegex(this.props.delimiter);
 
     return React.createElement('div', {
@@ -22155,7 +22159,7 @@ module.exports = warning;
 
 'use strict';
 
-var React = (typeof window !== "undefined" ? window.React : typeof global !== "undefined" ? global.React : null);
+var React = (typeof window !== "undefined" ? window['React'] : typeof global !== "undefined" ? global['React'] : null);
 var PureRenderMixin = require('react/addons').addons.PureRenderMixin;
 
 
