@@ -10,12 +10,12 @@ var pkg = JSON.parse(require('fs').readFileSync('./package.json'));
 // Default dependencies from package.json, except reactify (which is used for
 // the build). Dependencies can be customised by hard-coding this array.
 var dependencies = [];
-Object.keys(pkg.dependencies).forEach(function(i) {
+Object.keys(pkg.peerDependencies).forEach(function(i) {
 	if (i !== 'reactify') dependencies.push(i);
 });
 
 module.exports = {
-	
+
 	component: {
 		// This is the source (entry) file for the component
 		file: COMPONENT_NAME + '.js',
@@ -34,7 +34,7 @@ module.exports = {
 		// package build.
 		dependencies: dependencies
 	},
-	
+
 	example: {
 		// This is the directory to load the source files from
 		src: 'example/src',
@@ -48,10 +48,10 @@ module.exports = {
 		scripts: [
 			'app.js'
 		],
-		// Stylesheets will be built by less 
+		// Stylesheets will be built by less
 		stylesheets: [
 			'app.less'
 		]
 	}
-	
+
 };
