@@ -248,7 +248,11 @@ var Readalong = React.createClass({
   },
 
   render: function() {
-    this._voice = getVoice(this.props.voiceName, this.props.lang);
+    // Enable server-side rendering
+    if (typeof window === 'object') {
+      this._voice = getVoice(this.props.voiceName, this.props.lang);
+    }
+
     this._delimiterRegex = getDelimiterRegex(this.props.delimiter);
 
     return React.createElement('div', {
